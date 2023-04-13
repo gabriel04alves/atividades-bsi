@@ -61,6 +61,8 @@ area = math.pi * raio**2
 
 # ---- Parte 2 ----
 
+
+
 # 9) Faça um algoritmo que calcule o volume de uma lata de óleo. Escreva o resultado. FÓRMULA: volume = p * raio2 * altura
 import math
 lataRaio = int(input('Informe o raio da lata: '))
@@ -215,3 +217,121 @@ qtdComb = distancia * consumoCarro
 gastoComb = qtdComb * precoComb
 
 print(f'\nModelo: {modeloCarro}, marca: {marcaCarro}, ano: {anoCarro:.0f} \n \nDistância percorrida: {distancia:.2f} Km \nKm por litro: {consumoCarro:.2f} \nConsumo de combustível: {qtdComb:.2f} litros \nPreço por litro: R${precoComb:.2f} \n \nTotal a pagar: R${gastoComb:.2f}')
+
+
+
+# ---- Parte 3 ----
+
+
+
+# 1. Faça um Programa que mostre a mensagem "Alo mundo" na tela.
+print('Hello world')
+
+
+# 2. Faça um Programa que peça um número e então mostre a mensagem O número informado foi [número].
+numero = float(input('Informe um número: '))
+print(f'O número informado foi: {numero}')
+
+
+#3. Faça um Programa que peça dois números e imprima a soma.
+num1 = float(input('Informe um número: '))
+num2 = float(input('Informe outro número: '))
+print(f'A soma dos números informados é: {num1 + num2}')
+
+
+#4. Faça um Programa que peça as 4 notas bimestrais e mostre a média.
+nota1 = float(input('Informe a primeira nota do bimestre: '))
+nota2 = float(input('Informe a segunda nota do bimestre: '))
+nota3 = float(input('Informe a terceira nota do bimestre: '))
+nota4 = float(input('Informe a quarta nota do bimestre: '))
+
+media = (nota1 + nota2 + nota3 + nota4)/4
+
+print(f'A média é: {media}')
+
+
+# 5. Faça um Programa que converta metros para centímetros.
+metros = float(input('Informe um valor em metros: '))
+centimetros = metros * 100
+print(f'Metros: {metros} --> Centimetros: {centimetros}')
+
+
+# 6. Faça um Programa que peça o raio de um círculo, calcule e mostre sua área.
+import math
+raio = float(input('Informe o raio de um círculo: '))
+area = math.pi * raio**2
+print(f'A área do circulo é: {area:.2f}')
+
+
+# 7. Faça um Programa que calcule a área de um quadrado, em seguida mostre o dobro desta área para o usuário. 
+lado = float(input('Informe um dos lados do quadrado: '))
+area = lado*2 
+areaDobro = (lado*2)*2
+print(f'O dobro da area desse quadrado é: {areaDobro}')
+
+
+#8.Faça um Programa que pergunte quanto você ganha por hora e o número de horas trabalhadas no mês. Calcule e mostre o total do seu salário no referido mês.
+salarioHora = float(input('Informe quanto você ganha por hora: '))
+horasTrabalhadasMes = float(input(f'Informe quantas horas você trabalhou no mês: '))
+
+salarioMes = salarioHora * horasTrabalhadasMes
+
+print(f'O salário no mês foi de R${salarioMes:.2f}')
+
+
+# 11.Faça um Programa que peça 2 números inteiros e um número real. Calcule e mostre: a. o produto do dobro do primeiro com metade do segundo . b. a soma do triplo do primeiro com o terceiro. c. o terceiro elevado ao cubo.
+int1 = int(input('Informe um valor inteiro: '))
+int2 = int(input('Informe outro valor inteiro: '))
+real1 = float(input('Informe um valor real: '))
+
+a = int1 + (int2/2)
+b = (int1 * 3) + real1
+c = real1**3
+
+print(f'A) {a}; B) {b}, C) {c}')
+
+
+# 12. Tendo como dados de entrada a altura de uma pessoa, construa um algoritmo que calcule seu peso ideal, usando a seguinte fórmula: (72.7*altura) - 58
+altura = float(input('Informe a altura: '))
+pesoIdeal = (72.7*altura) + 58
+print(f'O peso ideal é {pesoIdeal}Kg.')
+
+
+# 16. Faça um programa para uma loja de tintas. O programa deverá pedir o tamanho em metros quadrados da área a ser pintada. Considere que a cobertura da tinta é de 1 litro para cada 3 metros quadrados e que a tinta é vendida em latas de 18 litros, que custam R$ 80,00. Informe ao usuário a quantidades de latas de tinta a serem compradas e o preço total.
+import math
+area = float(input('Informe o tamanho da área a ser pintada em m²: '))
+qtdLatas = math.ceil((area / 3) / 18) 
+preco = qtdLatas * 80
+print(f'\nQuantidade de latas: {qtdLatas} \nPreço total: {preco:.2f}')
+
+
+# 17. Faça um Programa para uma loja de tintas. O programa deverá pedir o tamanho em metros quadrados da área a ser pintada. Considere que a cobertura da tinta é de 1 litro para cada 6 metros quadrados e que a tinta é vendida em latas de 18 litros, que custam R$ 80,00 ou em galões de 3,6 litros, que custam R$ 25,00.Informe ao usuário as quantidades de tinta a serem compradas e os respectivos preços em 3 situações: comprar apenas latas de 18 litros; comprar apenas galões de 3,6 litros; misturar latas e galões, de forma que o preço seja o menor. Acrescente 10% de folga e sempre arredonde os valores para cima, isto é, considere latas cheias.
+import math
+area = float(input('Informe o tamanho da área a ser pintada em m²: '))
+qtdLatas = math.ceil(area / 6)
+preco = qtdLatas * 80
+print(f'\nQuantidade de latas: {qtdLatas} \nPreço total: {preco:.2f}')
+
+
+# 18. Faça um Programa para uma loja de tintas. O programa deverá pedir o tamanho em metros quadrados da área a ser pintada. Considere que a cobertura da tinta é de 1 litro para cada 6 metros quadrados e que a tinta é vendida em latas de 18 litros, que custam R$ 80,00 ou em galões de 3,6 litros, que custam R$ 25,00. Informe ao usuário as quantidades de tinta a serem compradas e os respectivos preços em 3 situações: comprar apenas latas de 18 litros; comprar apenas galões de 3,6 litros; misturar latas e galões, de forma que o preço seja o menor. Acrescente 10% de folga e sempre arredonde os valores para cima, isto é, considere latas cheias.
+import math
+area = float(input('Informe o tamanho da área a ser pintada em m²: '))*1.1
+
+qtdLatas = math.ceil(area / (18 * 6))
+precoLata = qtdLatas * 80
+print(f'Você vai precisar de {qtdLatas} latas. Isso vai custar R${precoLata:.2f}')
+
+qtdGaloes = math.ceil(area / (3.6 * 6))
+precoGalao = qtdGaloes * 80
+print(f'Você vai precisar de {qtdGaloes} galões. Isso vai custar R${precoGalao:.2f}')
+
+qtdLatas = area // 108
+qtdGaloes = math.ceil((area % 108) / 21.6) 
+print(f'Você usara {qtdLatas} de 18 litros e {qtdGaloes} de 3,6 litros. O que custará R${(qtdLatas * 80 + qtdGaloes * 25):.2f}')  
+
+
+# 19. Faça um programa que peça o tamanho de um arquivo para download (em MB) e a velocidade de um link de Internet (em Mbps), calcule e informe o tempo aproximado de download do arquivo usando este link (em minutos).
+tamanhoMb = float(input('Informe o tamanho do arquivo em MB: '))
+velocidadeInternet = float(input('Informe a velocidade de um link de internet em Mbps: '))
+tempo = (tamanhoMb / (velocidadeInternet / 8)) / 60
+print(f'O tempo é aproximadamente {tempo} minutos.')
