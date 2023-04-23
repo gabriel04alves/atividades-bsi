@@ -167,51 +167,183 @@ print(f'O mês que corresponde a {num} é {mesNum}.')
 
 
 # 18. Faça um algoritmo que verifique se uma letra digitada é vogal ou consoante.
-
+letra = input('Digite uma letra: ')
+if letra in 'AaEeIiOoUu': 
+  print('Vogal')
+else: print('Consoante')
 
 
 # 19. Ler 2 valores (considere que não serão lidos valores iguais) e escrever o maior deles.
-
+valor1 = float(input('Digite um número: '))
+valor2 = float(input('Digite outro número: '))
+if valor1 == valor2: 
+  print('Os valores digitados não podem ser iguais.')
+elif valor1 > valor2: 
+  print(f'O primeiro número é maior que o segundo. {valor1} > {valor2}')
+else: 
+  print(f'O segundo número é maior que o primeiro. {valor2} > {valor1}')
 
 
 # 20. Ler 2 valores (considere que não serão lidos valores iguais) e escrevê-los em ordem crescente.
-
+valor1 = float(input('Digite um número: '))
+valor2 = float(input('Digite outro número: '))
+if valor1 < valor2: 
+  print(f'{valor1}, {valor2}')
+else: 
+  print(f'{valor2},  {valor1}')
 
 
 # 21. Ler 3 valores (considere que não serão informados valores iguais) e escrever o maior deles.
+valor1 = float(input('Digite um número: '))
+valor2 = float(input('Digite outro número: '))
+valor3 = float(input('Digite outro número: '))
 
+if valor1 == valor2 or valor2 == valor3 or valor3 == valor1: 
+  print('Os valores digitados não podem ser iguais.')
+elif valor1 > valor2 and valor2 > valor3: 
+  print(f'{valor1}')
+elif valor2 > valor1 and valor1 < valor3: 
+  print(f'{valor2}')
+else: print(f'{valor3}')
 
 
 # 22. Ler 3 valores (considere que não serão informados valores iguais) e escrever a soma dos 2 maiores.
+valor1 = float(input('Digite um número: '))
+valor2 = float(input('Digite outro número: '))
+valor3 = float(input('Digite outro número: '))
 
+if valor1 == valor2 or valor2 == valor3 or valor3 == valor1: 
+  print('Os valores digitados não podem ser iguais.')
+elif valor1 > valor2 and valor2 > valor3: 
+  print(f'{valor1+valor2}')
+elif valor1 > valor2 and valor2 < valor3: 
+  print(f'{valor1+valor3}')
+elif valor2 > valor1 and valor1 > valor3: 
+  print(f'{valor2+valor1}')
+else: print(f'{valor2+valor3}')
 
 
 # 23. Ler 3 valores (considere que não serão informados valores iguais) e escrevê-los em ordem crescente.
+valor1 = float(input('Digite um número: '))
+valor2 = float(input('Digite outro número: '))
+valor3 = float(input('Digite outro número: '))
 
+if valor1 == valor2 or valor2 == valor3 or valor3 == valor1: 
+  print('Os valores digitados não podem ser iguais.')
+elif valor1 > valor2 and valor2 < valor3: 
+  print(f'{valor1}, {valor2}, {valor3}')
+elif valor1 > valor2 and valor2 < valor3: 
+  print(f'{valor1}, {valor2}, {valor3}')
+elif valor2 > valor1 and valor1 > valor3: 
+  print(f'{valor2}, {valor1}, {valor3}')
+else: 
+  print(f'{valor2}, {valor3}, {valor1}')
 
 
 # 24. Faça um algoritmo que leia as duas notas parciais obtidas por um aluno numa disciplina ao longo de um semestre, e calcule a sua média. A atribuição de conceitos obedece à tabela abaixo:
 # Média de Aproveitamento Conceito: Entre 9.0 e 10.0 A; Entre 7.5 e 9.0 B; Entre 6.0 e 7.5 C; Entre 4.0 e 6.0 D; Entre 4.0 e zero E; O algoritmo deve mostrar na tela as notas, a média, o conceito correspondente e a mensagem “APROVADO” se o conceito for A, B ou C ou “REPROVADO” se o conceito for D ou E.
-
+nota1 = float(input('Informe a primeira nota (0-10): '))
+nota2 = float(input('Informe a segunda nota (0-10): '))
+media = (nota1 + nota2)/2
+if media >= 6:
+  situacao = 'Aprovado'
+else: situacao = 'Reprovado'
+if media >= 9: 
+   conceito = 'A'
+elif media >= 7.5 and media < 9: 
+    conceito = 'B'
+elif media >= 6 and media < 7.5: 
+    conceito = 'C'
+elif media >= 4 and media < 6: 
+    conceito = 'D'
+else: conceito = 'E'
+print(f'\n \nNota 1: {nota1} \nNota 2: {nota2} \nMédia: {media} \nConceito: {conceito} \nSituação: {situacao}')
 
 
 # 25. Escrever um algoritmo para ler dois valores e uma das seguintes operações a serem executadas (codificadas da seguinte forma: 1 – Adição, 2 – Subtração, 3 – Multiplicação e 4 – Divisão). Calcular e escrever o resultado dessa operação sobre os dois valores lidos.
+operacao = int(input('Digite a operação desejada (1+; 2-; 3*; 4/): '))
+valor1 = float(input('Digite um número: '))
+valor2 = float(input('Digite outro número: '))
 
+if operacao == 1: 
+  print(f'{valor1 + valor2}')
+elif operacao == 2: 
+  print(f'{valor1 - valor2}')
+elif operacao == 3: 
+  print(f'{valor1 * valor2}')
+elif operacao == 4: 
+  print(f'{valor1 / valor2}')
+else: print('Operação inválida.')
 
 
 # 26. Faça um algoritmo para calcular as raízes reais de uma equação quadrática: ax2 + bx + c = 0. Uma equação quadrática só tem raiz reais se (b2 - 4ac) for maior ou igual a zero. O algoritmo deverá informar as seguintes situações:
 # • Se o delta calculado for negativo, a equação não possui raízes reais. Informe ao usuário e encerre o programa; • Se o delta calculado for igual a zero a equação possui apenas uma raiz real, informe-a ao usuário; • Se o delta for positivo, a equação possui duas raiz reais, informe-as ao usuário.
+import math
+a = float(input("Digite o valor de a: ")) 
+b = float(input("Digite o valor de b: ")) 
+c = float(input("Digite o valor de c: "))
 
+delta = b**2 - 4*a*c
+if delta < 0:
+    print("A equação não possui raízes reais.")
+elif delta == 0:
+    raiz = (-b + math.sqrt(delta)) / (2*a)
+    print(f"A equação possui apenas uma raiz real: {raiz:.2f}")
+else:
+    raiz1 = (-b + math.sqrt(delta)) / (2*a)
+    raiz2 = (-b - math.sqrt(delta)) / (2*a)
+    print(f"A equação possui duas raízes reais: {raiz1:.2f} e {raiz2:.2f}")
 
 
 # 27. Faça um algoritmo que leia 3 valores a, b, c, e verifique se podem ser os comprimentos dos lados de um triângulo. Em caso afirmativo, verifique se é “triângulo equilátero”, “triângulo isósceles” ou “triângulo escaleno”. Em caso negativo, escreva uma mensagem: “os valores lidos não formam um triângulo”. 
 # Considere que: • o comprimento de cada lado de um triângulo é menor que a soma dos comprimentos dos outros lados; • um triângulo equilátero tem três lados iguais; • um triângulo isósceles tem dois lados iguais e um diferente; • um triângulo escaleno tem três lados diferentes.
+import math
+a = float(input("Digite o valor de a: ")) 
+b = float(input("Digite o valor de b: ")) 
+c = float(input("Digite o valor de c: "))
 
+if (a + b) < c or (a + c) < b or (c + b) < a:
+  print('Não pode ser um triângulo.')
+elif a == b == c: 
+  print('Triângulo equilátero')
+elif a == b or a == c or b == c:
+  print('Triângulo isósceles')
+else: print('Triângulo escaleno')
 
 
 # 28. Escreva um algoritmo que leia 4 valores (opção, a, b, c), onde opção é um valor inteiro e positivo e a, b, c são quaisquer valores reais. Escreva os valores lidos da seguinte maneira:
 # se opção = 1 Þ escreva os 3 valores a, b, c em ordem crescente; se opção = 2 Þ escreva os 3 valores a, b, c em ordem decrescente; se opção = 3 Þ escreva os 3 valores de forma que o maior valor entre a, b, c fica entre os outros 2;
+opcao = int(input("Digite a opção (1-3): "))
+a = float(input("Digite o valor de a: "))
+b = float(input("Digite o valor de b: "))
+c = float(input("Digite o valor de c: "))
 
+if opcao == 1:
+    lista = [a, b, c]
+    lista.sort()
+    print(lista)
+elif opcao == 2:
+    lista = [a, b, c]
+    lista.sort(reverse=True)
+    print(lista)
+elif opcao == 3:
+    if a >= b and a >= c:
+        if b >= c:
+            print(c, b, a)
+        else:
+            print(b, c, a)
+    elif b >= a and b >= c:
+        if a >= c:
+            print(c, a, b)
+        else:
+            print(a, c, b)
+    else:
+        if a >= b:
+            print(b, a, c)
+        else:
+            print(a, b, c)
+else:
+    print("Opção inválida.")
 
 
 # 29. Uma empresa decidiu conceder um aumento de salário a seus funcionários de acordo com a tabela:
@@ -223,11 +355,29 @@ print(f'O mês que corresponde a {num} é {mesNum}.')
 # 1500.00 < salário =< 2000.00 | 4%
 # salário > 2000.00 | sem aumento
 # Faça um algoritmo que leia o salário atual de um funcionário e escreva o índice de aumento e o valor do salário corrigido.
-
+salario = float(input('Informe o salário atual (R$): '))
+if salario <= 400:
+  aumento = salario*0.15
+elif salario > 400 and salario <= 700:
+  aumento = salario*0.12
+elif salario > 700 and salario <= 1000:
+  aumento = salario*0.10
+elif salario > 1000 and salario <= 1500: 
+  aumento = salario*0.07
+elif salario > 1500 and salario <= 2000: 
+  aumento = salario*0.04
+else: aumento = 0
+print(f'Salário atual: R${salario:.2f} \nAumento = R${aumento:.2f} \nSalário corrigido: R${(salario+aumento):.2f}')
 
 
 # 30. Faça um algoritmo para calcular o reajuste salarial de um funcionário, de acordo com os critérios abaixo: • se salário é inferior a R$ 10.000,00 deve ter um reajuste de 55%; • se salário está entre R$ 10.000,00 (inclusive) e R$ 25.000,00 (inclusive) deve ter um reajuste de 20%; • se salário é superior a R$ 25.000,00 deve ter um reajuste de 20%.
-
+salario = float(input('Informe o salário atual (R$): '))
+if salario < 10000:
+  reajuste = salario*0.55
+elif salario >= 10000 and salario <= 25000:
+  reajuste = salario*0.20
+else: reajuste = salario*0.20
+print(f'Salário atual: R${salario:.2f} \nreajuste = R${reajuste:.2f} \nSalário corrigido: R${(salario+reajuste):.2f}')
 
 
 # 31. Faça um algoritmo para controle de temperatura de um forno que derrete alumínio. O programa deverá perguntar qual a temperatura que o alumínio deverá ser trabalhado e operar nas seguintes condições:
