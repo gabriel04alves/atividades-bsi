@@ -1,6 +1,3 @@
-# --- Lista de exercícios de estrutura de decisão --- 
-
-
 # 2. Ler um valor e escrever se é positivo, negativo ou zero.
 valor = float(input('Digite um valor: '))
 if valor >= 1: 
@@ -383,24 +380,82 @@ print(f'Salário atual: R${salario:.2f} \nreajuste = R${reajuste:.2f} \nSalário
 # 31. Faça um algoritmo para controle de temperatura de um forno que derrete alumínio. O programa deverá perguntar qual a temperatura que o alumínio deverá ser trabalhado e operar nas seguintes condições:
 # • Se temperatura for inferior ou igual 500°C enviar uma mensagem para tela "Temperatura Inválida"; • Se temperatura for menor do que 700°C enviar uma mensagem para tela "Aquecimento Ligado em 100%"; • Se temperatura for menor do que 735°C enviar uma mensagem para tela "Aquecimento Ligado em 50%"; • Se temperatura for maior ou igual 735°C enviar uma mensagem para tela "Aquecimento Desligado"; • Se temperatura for maior do que 780ºC enviar uma mensagem para tela "Superaquecimento'.
 # Os valores digitados devem ser inteiros e inferiores a 1000.
-
+temperatura = int(input('Informe a temperatura, em °C, que o forno deve operar: '))
+if temperatura > 1000 or temperatura <= 500: 
+  print('Temperatura inválida.')
+elif temperatura <= 700:
+  print('Aquecimento Ligado em 100%')
+elif temperatura <= 735:
+  print('Aquecimento Ligado em 50% \nAquecimento desligado')
+else: print('Superaquecimento')
 
 
 # 32. Faça um algoritmo que permita a entrada de um valor de 1 a 4. Em seguida, leia dois valores. Calcular e imprimir:
 # • Se valor digitado for o, calcular e exibir a soma dos números • Se valor digitado for 1, calcular e exibir a subtração dos números • Se valor digitado for 2, calcular e exibir a multiplicação dos números • Se valor digitado for 3, calcular e exibir a divisão dos números • Se valor digitado for 4, calcular e exibir a média dos números e Diferente de 1,2,3 ou 4, exibir a mensagem “Valor errado. Programa encerrado sem cálculos”
-
+entrada = int(input("Digite um valor entre 0 e 4: "))
+valor1 = float(input("Digite um valor: "))
+valor2 = float(input("Digite outro valor: "))
+if entrada == 0: 
+  print(f'{valor1} + {valor2} = {valor1+valor2}')
+elif entrada == 1:
+  print(f'{valor1} - {valor2} = {valor1-valor2}')
+elif entrada == 2: 
+  print(f'{valor1} * {valor2} = {valor1*valor2}')
+elif entrada == 3: 
+  print(f'{valor1} / {valor2} = {valor1/valor2}')
+elif entrada == 4: 
+  print(f'Média de {valor1}, {valor2} = {(valor1+valor2)/2}')
+else: print('Valor errado. Programa encerrado sem cálculos')
 
 
 # 33. Escrever um algoritmo que leia valores inteiros em duas variáveis distintas e se o resto da divisão da primeira pela segunda for 1 mostre a soma dessas variáveis mais o resto da divisão; se for 2 escreva se o primeiro e o segundo valor são pares ou ímpares; se for igual a 3 multiplique a soma dos valores lidos pelo primeiro; se for igual a 4 divida à soma dos números lidos pelo segundo, se este for diferente de zero. Em qualquer outra situação mostre o quadrado dos números lidos.
-
+valor1 = int(input('Digite um valor: '))
+valor2 = int(input('Digite outro valor: '))
+if valor1%valor2 == 1: 
+  print(f'({valor1} + {valor2}) + ({valor1%valor2}) = {valor1+valor2+1} ')
+elif valor1%valor2 == 2:
+  if valor1%2 == 0:
+    print(f'O valor 1 {valor1} é par')
+  else: print(f'O primeiro número {valor1} é ímpar')
+  if valor2%2 == 0:
+    print(f'O valor 2 {valor2} é par')
+  else: print(f'O valor 2 {valor2} é ímpar')
+elif valor1%valor2 == 3:
+  print(f'({valor1} + {valor2}) * {valor1} = {(valor1 + valor2) * valor1}')
+elif valor1%valor2 == 4 and valor2 != 0:
+    print(f'({valor1} + {valor2}) / {valor2} = {(valor1 + valor2) / valor2}')
+else: print(f'{valor1}**2 = {valor1**2} \n{valor2}**2 = {valor2**2}')
 
 
 # 34. Escreva um algoritmo que leia as idades de 2 homens e 2 mulheres (considere que as idades dos homens serão sempre diferentes, bem como as das mulheres). Calcule e escreva a soma das idades do homem mais velho com a mulher mais nova, e o produto das idades do homem mais novo com a mulher mais velha.
+homem1 = int(input("Digite a idade do primeiro homem: "))
+homem2 = int(input("Digite a idade do segundo homem: "))
+mulher1 = int(input("Digite a idade da primeira mulher: "))
+mulher2 = int(input("Digite a idade da segunda mulher: "))
 
+homemMaisVelho = max(homem1, homem2)
+homemMaisNovo = min(homem1, homem2)
+mulherMaisVelha = max(mulher1, mulher2)
+mulherMaisNova = min(mulher1, mulher2)
+soma = homemMaisVelho + mulherMaisNova
+produto = homemMaisNovo * mulherMaisNova
+print(f"A soma das idades do homem mais velho com a mulher mais nova é: {soma}")
+print(f"O produto das idades do homem mais novo com a mulher mais velha é: {produto}")
 
 
 # 35. Existem números de 4 dígitos (entre 1000 e 9999) que obedecem à seguinte característica: se dividirmos o número em dois números de dois dígitos, um composto pela dezena e pela unidade, e outro pelo milhar e pela centena, e, ao somarmos estes dois novos números gerando um terceiro, o quadrado deste terceiro número é exatamente o número original de quatro dígitos. Por exemplo:
 # 2025 -> dividindo: 20 e 25 -» somando temos 45 -> 45º = 2025.
 # Escreva um programa para ler um número e verificar se ele obedece a esta característica.
+valor1 = int(input("Digite um número de 4 dígitos: "))
 
-
+if valor1 < 1000 or valor1 > 9999:
+    print("O número digitado não tem 4 dígitos.")
+else:
+    dezena_unidade = valor1 % 100
+    milhar_centena = valor1 // 100
+    soma = dezena_unidade + milhar_centena
+    resultado = soma ** 2
+    if resultado == valor1:
+        print(f"O número {valor1} obedece à característica.")
+    else:
+        print(f"O número {valor1} não obedece à característica.")
