@@ -47,28 +47,67 @@ for x in range(contador):
         print('0 = fim.')
         break
 
-print(f'Maior valor: {max(nums)}')
-print(f'Menor valor: {min(nums)}')
+print(f'Maior valor: {max(nums)}\n Menor valor: {min(nums)}')
 
 
 # 4. Faça um algoritmo que calcule e escreva a soma dos números pares e a soma dos números ímpares entre 1 e 100.
+pares = []
+impares = []
 
+for i in range(0,101):
+  if i % 2 == 0:
+    pares.append(i)
+  else: impares.append(i)
+print(f'Soma dos pares: {sum(pares)}\nSoma dos ímpares: {sum(impares)}')
 
 
 # 5. Faça um algoritmo que leia a altura de 20 pessoas e calcule a média aritmética das alturas.
+qtdPessoas = int(input('Informe a quantidade de pessoas: '))
+somaAlturas = 0
 
+for i in range(qtdPessoas): 
+  altura = float(input('Informe a altura da pessoa: '))
+  somaAlturas += altura
+print(f'A média das alturas é {somaAlturas/qtdPessoas}')
 
 
 # 6. Faça um algoritmo que leia n valores inteiros e escreva quantos desses valores são negativos.
+qtdValores = int(input('Informe a quantidade de valores que deseja informar: '))
+cont = 0
 
+for i in range(qtdValores): 
+  valor = int(input('Informe um valor: '))
+  if valor < 0:
+    cont += 1
+print(f'Foram informados {cont} valores negativos.')
 
 
 # 7. Faça um algoritmo que leia a quantidade de tinta que uma caneta, e enquanto a caneta tiver tinta para escrever, escreva “Enquanto tem tinta a caneta escreve...”. Considere que a cada comando de escrita a caneta gasta 2% da tinta que possui.
+qtdTinta = float(input('Informe a quantidade de tinta da caneta: '))
+tinta = qtdTinta
 
+while qtdTinta > 0:
+  print(f'Enquanto tem tinta a caneta escreve... {qtdTinta}')
+  qtdTinta -= (0.02 * tinta)
+print('FIM.')
 
 
 # 8. Faça um algoritmo que leia n pares de valores, sendo o primeiro valor o número de inscrição do atleta e o segundo a altura (em cm) do atleta. Escreva: • o número de inscrição e a altura do atleta mais alto; • o número de inscrição e a altura do atleta mais baixo; • a altura média do grupo de atletas.
+qtdAtletas = int(input('Informe a quantidade de atletas: '))
+atletas = []
 
+for i in range(qtdAtletas):
+  numInscricao = int(input('Digite o número de inscrição do atleta: ')) 
+  altura = float(input('Digite a altura do atleta (em cm): '))
+  atleta = {'numInscricao': numInscricao, 'altura': altura}
+  atletas.append(atleta)
+maisAlto =  max(atletas, key=lambda x: x['altura'])
+maisBaixo = min(atletas, key=lambda x: x['altura'])
+somaAlturas = sum(atleta['altura'] for atleta in atletas)
+mediaAlturas = somaAlturas / qtdAtletas
+print(f"\nMédia de altura dos atletas: {mediaAlturas}")
+print(f"\nAtleta mais alto - número: {maisAlto['numInscricao']}, altura: {maisAlto['altura']}cm")
+print(f"Atleta mais baixo - número: {maisBaixo['numInscricao']}, altura: {maisBaixo['altura']}cm")
 
 
 # 9. Faça um algoritmo que calcule e imprima os valores de y, onde: y = (3+2x+6x²)/(1+9x+16x²), para x variando de 1.0 até 5.0, em intervalos de 0.1 unidades.
