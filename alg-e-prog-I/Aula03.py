@@ -111,19 +111,33 @@ print(f"Atleta mais baixo - número: {maisBaixo['numInscricao']}, altura: {maisB
 
 
 # 9. Faça um algoritmo que calcule e imprima os valores de y, onde: y = (3+2x+6x²)/(1+9x+16x²), para x variando de 1.0 até 5.0, em intervalos de 0.1 unidades.
-
+import numpy as np
+x = np.arange(1, 5.1, 0.1)
+y = (3+2*x+(6*x**2))/(1+9*x+(16*x**2))
+print(y)
 
 
 # 10. Construir um algoritmo que calcule o fatorial de um número N.
+num = int(input('Informe um número: '))
 
+for n in range(1, num):
+  num *= n
+  print(num)
 
 
 # 11. Faça um algoritmo que calcule e escreva a soma da seguinte série de 100 termos: 1 + 2 + 3 + 4 + ... +100
-
+sum = 0
+for i in range(1,101):
+  sum = i+sum
+  print(sum)
 
 
 # 12. Faça um algoritmo que calcule e escreva a soma da seguinte série de 100 termos: (1/1) + (1/2) + (1/3) + ... + (1/100)
-
+sum = 0
+base = 0
+for i in range(1,101):
+  sum += 1/i
+  print(sum)
 
 
 # 13. Fazer um algoritmo para calcular o valor de S, dado por:
