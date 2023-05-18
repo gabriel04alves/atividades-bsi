@@ -210,17 +210,42 @@ print(f'\n4: {((cnQuatro/total)*100):.2f}% \n5: {((cnCinco/total)*100):.2f}% \n9
 
 # 18. Uma companhia de teatro planeja dar uma série de espetáculos. A direção calcula que, a R$ 5,00 o ingresso, serão vendidos 120 ingressos. Com a diminuição de R$ 0,50 no preço dos ingressos, espera-se que haja um aumento de 26 ingressos vendidos. As despesas estão estipuladas em R$ 200,00 independente do número de ingressos vendidos. 
 # Faça um algoritmo que escreva uma tabela contendo o preço do ingresso, o número de ingressos e o lucro esperado em função do preço do ingresso, fazendo-se variar este preço de R$ 5,00 a R$ 1,00 de R$ 0,50 em R$ 0,50. Escreva também o lucro máximo esperado, o preço e o número de ingressos correspondentes.
-
+import numpy as np
+ingressos = 120
+preco = 5
+despesas = 200
+print(f'| N° ingressos | Preço | Lucro  |')
+for i in np.arange(0.9, 5, 0.5):
+  print(f'|{ingressos:^14}|{preco:^7.2f}|{((preco*ingressos) - despesas):^8.2f}|')
+  ingressos += 26
+  preco -= 0.5
 
 
 # 19. Faça um algoritmo que leia n números inteiros e escreva, para cada número lido, os divisores e quantidade de divisores.
 # EXEMPLO: número lido = 12; divisores = 1, 2, 3, 4, 6, 12; quantidade divisores = 6
-
+numNumeros = int(input('Informe a quantidade de números: '))
+numerosLidos = []
+for i in range(numNumeros):
+  num = int(input('Informe um número: '))
+  numerosLidos.append(num)
+for n in numerosLidos:
+  divisores = []
+  for x in range(1, n+1): 
+    if n % x == 0:
+      divisores.append(x)
+    else: continue
+  print(f'Número lido: {n} | Divisores: {divisores} | Quantidade de divisores: {len(divisores)} ')
 
 
 # 20. Uma máquina de biscoito está com problemas. Quando ligada, após 1 hora ela quebra 1 biscoito, na segunda hora ela quebra 3 biscoitos, na hora seguinte ela quebra 3 vezes a quantidade de biscoitos quebrados na hora anterior, e assim por diante.
 # Faça um algoritmo que calcule quantos biscoitos são quebrados no final de cada dia (a máquina opera 16 horas por dia).
-
+totalMinutos = 16*60
+biscoito = 1
+horas = 1
+for i in range(60, totalMinutos, 60):
+  horas += 1
+  biscoito *= 3 
+  print(f'Quebrou mais um! | Total: {biscoito} | Tempo: {horas} horas') 
 
 
 # 21. Uma turma tem 50 alunos. Faça um algoritmo que: • leia para cada aluno o seu nome e idade; • escreva os nomes dos alunos que tem 18 anos; • escreva a quantidade de alunos que tem idade acima de 20 anos.
