@@ -153,18 +153,59 @@ for i in range(1,101):
 
 # 15. Fazer um algoritmo que calcule e escreva a soma dos 20 primeiros termos da série:
 # (100/0!) + (99/1!) + (98/2!) + (97/3!) + ...
+soma = 0
+fatorial = 1
 
+for i in range(20): 
+  divisao = (100-i) / fatorial
+  soma += divisao
+  fatorial *= (i+1)
+print(soma)
 
 
 # 16. Fazer um algoritmo que calcule e imprima o valor de ex através da série:
 # eˣ = x⁰ + (x¹/1!) + (x²/2!) + (x³/3!) + ...
 # Considerar para efeitos de cálculo os 30 primeiros termos. O algoritmo deverá ler o valor de x.
+x = int(input('Informe o valor de X: '))
+soma = 0
+fatorial = 1
 
+for i in range(30):
+  divisao = x**i / fatorial
+  soma += divisao
+  fatorial *= (i+1)
+  
+print(soma)
 
 
 # 17. Foi feita uma pesquisa de audiência de canal de TV em n casas de um determinado bairro de Joinville, em um certo dia do mês. Na pesquisa foi utilizado um coletor de dados portátil. Para cada casa visitada, foi fornecido o número do canal (4, 5, 9, 12) e o número de pessoas que estavam assistindo a TV naquele horário, considerando que
 # em cada casa só existia uma televisão. Em casas onde a televisão estava desligada, foi registrado zero para o número do canal e para o número de pessoas. Faça um algoritmo que calcule e escreva, para cada emissora, o percentual de audiência.
+casas = int(input('Informe a quantidade de casas: '))
+cnQuatro = 0
+cnCinco = 0 
+cnNove = 0
+cnDoze = 0
+outros = 0
+total = 0
 
+for i in range(casas): 
+  audiencia = int(input(f'Informe a quantidade de pessoas assistindo na casa {i+1}: '))
+  if audiencia == 0:
+    continue
+  else:
+    canal = int(input(f'Informe o canal assistido na casa {i+1}: '))
+    total += audiencia
+    if canal == 4:
+      cnQuatro += audiencia
+    elif canal == 5:
+      cnCinco += audiencia
+    elif canal == 9:
+      cnNove += audiencia
+    elif canal == 12:
+      cnDoze += audiencia
+    else: outros += audiencia
+
+print(f'\n4: {((cnQuatro/total)*100):.2f}% \n5: {((cnCinco/total)*100):.2f}% \n9: {((cnNove/total)*100):.2f}% \n12: {((cnDoze/total)*100):.2f}% \nOutros: {((outros/total)*100):.2f}%')
 
 
 # 18. Uma companhia de teatro planeja dar uma série de espetáculos. A direção calcula que, a R$ 5,00 o ingresso, serão vendidos 120 ingressos. Com a diminuição de R$ 0,50 no preço dos ingressos, espera-se que haja um aumento de 26 ingressos vendidos. As despesas estão estipuladas em R$ 200,00 independente do número de ingressos vendidos. 
