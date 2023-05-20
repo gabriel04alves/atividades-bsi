@@ -142,13 +142,26 @@ for i in range(1,101):
 
 # 13. Fazer um algoritmo para calcular o valor de S, dado por:
 # S = (1/N) + (2/N-1) (3/N-2) + ... + (N-1/2) + (N/1) sendo N lido.
-
+n = int(input('Digite um valor: '))
+s = 0
+for a in range(1, n+1):
+  s += a / (n - (a - 1))
+print(s)
 
 
 # 14. O valor aproximado do número p pode ser calculado usando-se a série:
 # S = 1 - (1/3³) + (1/5³) + (1/7³) + (1/9³) - ...
 # sendo o valor de pi = ³√Sx32. Faça um algoritmo que calcule e escreva o valor de p usando os 51 primeiros termos da série.
-
+s = 0
+sinal = 0
+for i in range(1, 102, 2):
+  if sinal % 2 == 0:
+    s += 1 / i ** 3
+  else:
+    s -= 1 / i ** 3
+  sinal += 1
+pi = (s * 32) ** (1/3)
+print(pi)
 
 
 # 15. Fazer um algoritmo que calcule e escreva a soma dos 20 primeiros termos da série:
@@ -249,16 +262,54 @@ for i in range(60, totalMinutos, 60):
 
 
 # 21. Uma turma tem 50 alunos. Faça um algoritmo que: • leia para cada aluno o seu nome e idade; • escreva os nomes dos alunos que tem 18 anos; • escreva a quantidade de alunos que tem idade acima de 20 anos.
+qtdAlunos = int(input('Informe a quantidade de alunos na turma: '))
+alunosDezoitoAnos = []
+alunosMaisVinteAnos = 0
 
+for i in range(qtdAlunos): 
+  nome = input('Informe o nome do aluno: ')
+  idade = int(input('Informe a idade do aluno: '))
+  if idade == 18:
+    alunosDezoitoAnos.append(nome)
+  elif idade > 20:
+    alunosMaisVinteAnos += 1
+
+print(f'Alunos com 18 anos: {alunosDezoitoAnos}; Quantidade de alunos com mais de vinte anos: {alunosMaisVinteAnos}.')    
 
 
 # 22. Faça um algoritmo que: • leia, para n pessoas, a altura e o sexo (sexo = 'M' ou sexo = 'm' para masculino e sexo = 'F' ou sexo = 'f' para feminino); • escreva a média da altura das mulheres; • escreva a média da altura da turma.
+qtdPessoas = int(input('Informe a quantidade de pessoas: '))
+turma = []
+mulheres = []
 
+for i in range(qtdPessoas):
+  altura = float(input('Informe a altura (cm): '))
+  sexo = input('Informe o sexo da pessoa (M - Masculino / F - Feminino): ')
+  if sexo == 'M': 
+    turma.append(altura)
+  elif sexo == 'F':
+    turma.append(altura)
+    mulheres.append(altura)
+print(f'Altura média das mulheres: {(sum(mulheres)/len(mulheres)):.2f}cm.') 
+print(f'Altura média da turma: {(sum(turma)/len(turma)):.2f}cm.')
 
 
 # 23. Uma loja de departamentos oferece para seus clientes um determinado desconto de acordo com o valor da compra efetuada. O desconto é de 20% caso o valor da compra seja maior que R$ 500,00 e de 15% caso seja menor ou igual. 
 # Faça um algoritmo que leia, para cada cliente, nome, endereço e valor da compra e escreva o total a pagar. Um nome de cliente igual a ULTIMO indica o fim da entrada de dados.
-
+ultimoNome = ''
+while True:
+    clienteNome = input('Informe o nome do cliente: ')
+    if clienteNome == ultimoNome:
+        print('O cliente já realizou uma compra!')
+        break
+    ultimoNome = clienteNome
+    clienteEndereco = input('Informe o endereço do cliente: ')
+    valorCompra = float(input('Informe o valor da compra (R$): '))
+    if valorCompra > 500:
+      totalPagar = valorCompra - (valorCompra * 0.20)
+    else:
+      totalPagar = valorCompra - (valorCompra * 0.15)
+    print(f'\nNome: {clienteNome} | Endereço: {clienteEndereco} | Valor da compra: R${valorCompra:.2f} | Total a pagar: R${totalPagar:.2f}\n')
 
 
 # 24. Faça um algoritmo que leia valores, sendo que cada valor representa a idade de uma pessoa. Calcule e escreva a idade média do grupo de pessoas. Só devem ser computados no cálculo valores maiores do que zero. O algoritmo deve apresentar ao usuário a seguinte mensagem:
