@@ -314,41 +314,170 @@ while True:
 
 # 24. Faça um algoritmo que leia valores, sendo que cada valor representa a idade de uma pessoa. Calcule e escreva a idade média do grupo de pessoas. Só devem ser computados no cálculo valores maiores do que zero. O algoritmo deve apresentar ao usuário a seguinte mensagem:
 # deseja digitar mais um valor: s (SIM) / n (NAO)?, antes de prosseguir com a entrada de dados.
-
+idade = []
+while True: 
+  novaIdade = int(input('Digite a idade (anos): '))
+  if novaIdade > 0:
+    idade.append(novaIdade)
+  entrada = input('Deseja digitar uma nova idade (S - sim) (N - não)? ')
+  if entrada == 'S':
+    continue
+  elif entrada == 'N':
+    break
+print(f'A média de idade do grupo é {round(sum(idade)/len(idade))} anos.')
 
 
 # 25. Um hotel cobra R$ 50,00 de diária por hóspede e mais uma taxa de serviços. A taxa de serviços é de:
 # • R$ 7,50 por diária, caso o número de diárias seja menor que 15; • R$ 6,50 por diária, caso o número de diárias seja igual a 15; • R$ 5,00 por diária, caso o número de diárias seja maior que 15.
 # Faça um algoritmo que apresente as seguintes opções ao recepcionista: 1. encerrar a conta de um hóspede; 2. verificar número de contas encerradas; 3. finalizar a execução.
 # Caso a opção escolhida seja a primeira, leia o nome e o número de diárias do hóspede e escreva o nome e total a ser pago. Caso a opção escolhida seja a segunda, informe o número de hóspedes que deixaram o hotel (número de contas encerradas).
-
+numCheckOut = 0
+while True: 
+  opcao = int(input('\nEscolha uma opção: \n1. encerrar a conta de um hóspede \n2. verificar número de contas encerradas \n3. finalizar a execução \n'))
+  if opcao > 3 or opcao < 1:
+    print(f'\n Opção inválida!')
+    continue
+  elif opcao == 1:
+    nome = input('\nInforme o nome do hóspede: ')
+    diarias = int(input('Informe o número de diárias: '))
+    if diarias < 15:
+      taxaServicos = 7.50
+    elif diarias == 15:
+      taxaServicos = 6.50
+    elif diarias > 15:
+      taxaServicos = 5.00
+    totalPagar = (50 + taxaServicos) * diarias
+    numCheckOut += 1
+    print(f'\n --- Nome: {nome} | N° de diárias: {diarias} | Total a pagar: R${totalPagar:.2f} ---')
+    continue
+  elif opcao == 2:
+    print(f'\n-- Até então, {numCheckOut} hospedes deixaram o hotel. --')
+    continue
+  elif opcao == 3:
+    print(f'\nExecução do programa finalizada. ')
+    break
 
 
 # 26. Um determinado material radioativo perde metade de sua massa a cada 50 segundos. Dada a sua massa inicial em Kg, faça um algoritmo que determine o tempo necessário
 # para que essa massa se torne menor que 0,5 gramas. Escreva a massa inicial, a massa final e o tempo.
-
+massa = int(input('Informe a massa inicial (Kg): '))
+massaInicial = massa 
+tempoSeg = 0
+while massa >= 0.0049:
+  massa /= 2
+  tempoSeg += 50
+print(f'Massa inicial: {massaInicial}Kg | Massa final: {massa:.4f}Kg | Tempo: {tempoSeg} segundos')
 
 
 # 27. Um motorista acaba de voltar de um feriado prolongado. Antes de sair de viagem e imediatamente após retornar, o motorista encheu o tanque do veículo e registrou as medidas do odômetro. Em cada parada feita durante a viagem, foi registrado o valor do odômetro e a quantidade de combustível comprado para reabastecer o veículo (suponha que o tanque ficou vazio e foi enchido a cada parada). 
 # Faça um algoritmo que leia o número total de reabastecimentos feitos (incluindo o primeiro) e os dados registrados relativos à compra de combustível. Calcule e escreva:
 # a) a quilometragem obtida por litro de combustível entre cada par de paradas; b) a quilometragem média obtida por litro de combustível em toda a viagem.
+parada = 0
+odoInicial = 0
+litroTotal = 0
+quilometragemTotal = 0
 
+while True:
+    parada += 1
+    odoAtual = float(input(f'Digite a medida do odômetro na parada {parada} (Km): '))
+    litroAtual = float(input(f'Digite a quantidade de combustível comprado na parada {parada} (Litros): '))
+    if parada % 2 != 0:
+        odoInicial = odoAtual
+        litroTotal += litroAtual
+    else:
+        quilometragemParcial = odoAtual - odoInicial
+        kmLitro = quilometragemParcial / litroAtual
+        print(f'Entre a parada {parada - 1} e a parada {parada} foram percorridos {quilometragemParcial} km com {litroAtual} litros de combustível.') 
+        print(f'Portanto, a quilometragem obtida por litro foi de {kmLitro:.2f} km/l.')
+        quilometragemTotal += quilometragemParcial
+    continuar = input(f'\nDeseja adicionar mais paradas? (S - sim / N - não): ')
+    if continuar.lower() != 's':
+        break
+mediaKmLitro = quilometragemTotal / litroTotal
+print(f'A média de quilometragem obtida por litro em toda a viagem foi de {mediaKmLitro:.2f} km/l.')
 
 
 # 28. Em uma disputa de pingue-pongue os pontos são anotados como D, ponto para o jogador do lado direito, e E, ponto para o jogador do lado esquerdo da mesa. Faça um
 # algoritmo que leia o código do ponto de cada jogada e determine o vencedor. A partida encerra quando:
 # a) um dos jogadores chegar a 21 pontos e a diferença de pontos entre os jogadores for maior ou igual a dois; b) o jogador com mais de 21 pontos conseguir uma diferença de dois pontos sobre o adversário, caso a primeira condição não seja atendida.
-
+pontosDireito = 0
+pontosEsquerdo = 0
+while True: 
+  ponto = input('Informe de quem foi o ponto ( D - direito / E - Esquerdo): ')
+  if ponto == 'D':
+    pontosDireito += 1
+  elif ponto == 'E':
+    pontosEsquerdo += 1
+  else: 
+    print(f'Ponto inválido, repita.')
+    continue
+  if pontosDireito >= 21 and (pontosDireito - pontosEsquerdo) >= 2:
+    print(f'\nO jogador do lado direito venceu! | Direito {pontosDireito} x {pontosEsquerdo} Esquerdo')
+    break
+  elif pontosEsquerdo >= 21 and (pontosEsquerdo - pontosDireito) >= 2:
+    print(f'\nO jogador do lado esquerdo venceu! | Direito {pontosDireito} x {pontosEsquerdo} Esquerdo')
+    break
 
 
 # 29. Os regulamentos de uma competição de pesca impõem um limite no peso total de pesca de um dia. Faça um algoritmo que leia o limite diário (em quilogramas) e então leia o peso (em gramas) de cada peixe e escreva o peso total da pesca obtido até
 # aquele ponto. Quando o limite diário for excedido escreva uma mensagem e encerre a execução do algoritmo. O algoritmo deve ainda apresentar ao usuário a seguinte mensagem: informar o peso de mais um peixe: s (SIM) / n (NÃO)? antes de prosseguir com a entrada de dados.
+limiteDiario = float(input('Informe o limite diário de peso pescado (Kg): '))
+pesoPescado = 0
 
+while True:
+  peixeGramas = float(input('\nInforme o peso do peixe pescado (gramas): '))
+  peixeKg = peixeGramas/1000
+  pesoPescado += peixeKg
+  if pesoPescado >= limiteDiario:
+    print(f'\n--- O limite de peso pescado diário foi excedido! | Peso pescado: {pesoPescado:.2f}Kg. ---')
+    break
+  else: 
+    registrar = input('\nDeseja registra mais um peixe (S - sim / N - não): ') 
+    if registrar == 'S':
+      print(f'Peso pescado até o momento: {pesoPescado:.2f}Kg.')
+      continue
+    elif registrar == 'N':
+      print(f'O programa foi encerrado. | Peso pescado: {pesoPescado:.2f}Kg.')
+      break
 
 
 # 30. Foi feita uma pesquisa do consumo mensal de energia elétrica em uma determinada cidade. Para cada consumidor, são fornecidos os seguintes dados: 
 # número de identificação do consumidor, quantidade de kWh consumidos durante o mês, código do tipo de consumidor (R - residencial, C - comercial, I - industrial). Faça um algoritmo que:
 # a) leia o preço do kWh por tipo de consumidor; b) leia os dados de n consumidores; c) escreva o número de identificação e o total a pagar, para cada consumidor; 
 # d) escreva a quantidade total de KWh consumida para cada um dos três tipos de consumidores; e) escreva a quantidade média geral de consumo.
+tarifaResidencial = float(input('Informe o preço do KWh para residências (R$): '))
+tarifaComercial = float(input('Informe o preço do KWh para comércios (R$): '))
+tarifaIndustrial = float(input('Informe o preço do KWh para industrias (R$): '))
+totalResidencial = 0
+totalComercial = 0
+totalIndustrial = 0
+mediaGeral = []
 
+while True:
+  numeroId = int(input('\nInforme o n° de identificação: '))
+  tipo = input('Informe o tipo (r - residencial / c - comercial / i - industrial): ') 
+  consumo = float(input('Informe o consumo em KWh: '))
+  if tipo == 'r':
+    totalResidencial += consumo
+    mediaGeral.append(consumo)
+    conta = consumo * tarifaResidencial
+  elif tipo == 'c':  
+    totalComercial += consumo
+    mediaGeral.append(consumo)
+    conta = consumo * tarifaComercial
+  elif tipo == 'i': 
+    totalIndustrial += consumo
+    mediaGeral.append(consumo)
+    conta = consumo * tarifaIndustrial
+  print(f'\n--- Cliente: {numeroId} | Total a pagar: R${conta:.2f} ---')
+  continuar = input(f'\nDeseja registrar mais um cliente (S - sim / N - não): ')
+  if continuar == 'S':
+    continue
+  elif continuar == 'N':
+    print(f'-- Registro de clientes finalizado. --')
+    break
+
+print(f'\nConsumo total KWh:')
+print(f'Residencial: {totalResidencial:.2f} KWh | Comercial: {totalComercial:.2f} KWh | Industrial: {totalIndustrial:.2f} KWh')
+print(f'\nMédia geral de consumo: {(sum(mediaGeral)/len(mediaGeral)):.2f} KWh')
 
