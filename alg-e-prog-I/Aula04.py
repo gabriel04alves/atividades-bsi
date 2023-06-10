@@ -106,7 +106,20 @@ print(f"Vetor 3: {vetor3}")
 # b) intercale os elementos desses dois conjuntos formando uma nova variável composta
 # unidimensional de 50 elementos;
 # c) Escreva o resultado obtido.
-
+from random import *
+vetor1 = []
+vetor2 = []
+somaVetores = []
+for i in range(0, 25):
+  vetor1.append(randrange(0, 100))
+for i in range(0, 25):
+  vetor2.append(randrange(0, 100))
+print(f'Vetores 1 e 2: {vetor1 + vetor2}.')
+print(f'\nVetor 1: {vetor1};')
+print(f'Vetor 2: {vetor2};')
+for i in range(0, 25):
+  somaVetores.append(vetor1[i] + vetor2[i]) 
+print(f'\nVetor 1 + vetor 2: {somaVetores}.')
 
 
 # 10) Escreva um algoritmo que:
@@ -122,7 +135,16 @@ print(f"Vetor 3: {vetor3}")
 # • Os elementos de ordem par são os correspondentes do primeiro vetor multiplicados por 3.
 # • Os elementos de ordem ímpar são os correspondentes do primeiro vetor divididos por 2.
 # • Imprima os dois vetores.
-
+from random import *
+vetor1 = []
+vetor2 = []
+for i in range(0, 10):
+  vetor1.append(randint(0,5000))
+for i in range(len(vetor1)):
+  if (i+1)%2 == 0:
+    vetor2.append(vetor1[i]*3)
+  else: vetor2.append(vetor1[i]/2)
+print(f'Vetor 1: {vetor1}; \nVetor 2: {vetor2}.')
 
 
 
@@ -138,7 +160,25 @@ print(f"Vetor 3: {vetor3}")
 # b) conte quantos brancos existem na frase;
 # c) conte quantas vezes a letra “A” aparece;
 # d) imprima o que foi calculado nos itens b e c.
-
+limiteCaracteres = 50
+frase = ''
+branco = 0
+A = 0
+while True:
+    frase = input(f'Digite algo (limite de {limiteCaracteres} caracteres): '.format(limiteCaracteres))
+    if len(frase) <= limiteCaracteres:
+        break
+    else:
+        print('A entrada excede o limite de caracteres. Tente novamente.')
+for i in range(len(frase)):
+  if frase[i] == ' ':
+    branco += 1
+  elif frase[i] == 'A' or frase[i] == 'a':
+    A += 1
+print(f'Frase: {frase};')
+print(f'Tamanho da frase: {len(frase)};')
+print(f'Espaços em branco: {branco};')
+print(f'Letras "A": {A};')
 
 
 
@@ -152,7 +192,12 @@ print(f"Vetor 3: {vetor3}")
 
 
 # 15) Classificar um vetor numérico VET de 20 elementos em ordem crescente.
-
+from random import *
+vetor = []
+for i in range(0,20):
+  vetor.append(randint(0,100))
+print(f'Lista original: {vetor}')
+print(f'Lista com elementos ordenados: {sorted(vetor)}')
 
 
 # 16) Dado um vetor de 128 elementos, verificar se existe um elemento igual a K (chave) no vetor.
