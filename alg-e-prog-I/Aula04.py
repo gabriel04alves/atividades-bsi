@@ -204,7 +204,22 @@ print(f'Lista com elementos ordenados: {sorted(vetor)}')
 # Se existir, imprimir a posição onde foi encontrada a chave; se não; imprimir a mensagem:
 # “CHAVE K NÃO ENCONTRADA”. O vetor A e a chave K são lidos a partir de uma unidade de
 # entrada.
-
+from random import *
+import random
+import string
+vetor = []
+chave = input('Digite a chave: ')
+chaveQtd = 0
+chavePosicao = []
+for i in range(0,128):
+  valor = random.choice(string.ascii_letters + string.digits)
+  vetor.append(valor)
+  if valor == chave:
+    chaveQtd += 1
+    chavePosicao.append(i+1) 
+  else: continue
+print(f'Vetor: {vetor}')
+print(f'Chave: {chave} | Quantidade de chaves: {chaveQtd} | Posições da chave: {chavePosicao}')
 
 
 # 17) Refaça o algoritmo acima otimizando-o usando uma técnica conhecida por Pesquisa Binária.
@@ -221,31 +236,116 @@ print(f'Lista com elementos ordenados: {sorted(vetor)}')
 
 # 18) Faça um algoritmo qualquer que leia uma matriz A de 15 linhas por 25 colunas e imprima o
 # seu conteúdo.
-
-
+import random
+linhas = []
+for i in range(0, 15):
+  linha = []
+  for x in range(0, 25):
+    valor = random.randint(10,99)
+    linha.append(valor)
+  linhas.append(linha)
+print(f'Matriz:')
+for linha in linhas:
+  for valor in linha: 
+    print(valor, end=" | ")
+  print('')
 
 
 # 19) Dada uma matriz B, de 10 linhas por 20 colunas, escrever um algoritmo que calcula e imprima
 # o somatório dos elementos da quinta linha.
-
+import random
+linhas = []
+for i in range(0, 10):
+  linha = []
+  for x in range(0, 20):
+    valor = random.randint(10,99)
+    linha.append(valor)
+  linhas.append(linha)
+print(f'Soma dos elementos da 5° linha: {sum(linhas[4])}')
+print(f'\nMatriz: ')
+for linha in linhas:
+  for valor in linha: 
+    print(valor, end=" | ")
+  print('')
 
 
 # 20) Dada uma tabela de 4 x 5 elementos, calcular a soma de cada linha e a soma de todos os
 # elementos.
-
+import random
+linhas = []
+print(f'Matriz: ')
+for i in range(0, 4):
+  linha = []
+  for x in range(0, 5):
+    valor = random.randint(10,99)
+    linha.append(valor)
+  linhas.append(linha)
+  for valor in linha: 
+    print(valor, end=" | ")
+  print('')
+cont = 0
+somaTudo = 0 
+print()
+for linha in linhas: 
+  cont += 1
+  somaTudo += sum(linha)
+  print(f'Soma dos elementos da linha {cont}: {sum(linha)}')
+print(f'\nSoma de todos os elementos: {somaTudo}')
 
 
 # 21) Elabore um algoritmo que leia uma matriz 4 x 4 e escreva a matriz resultante após ter
 # multiplicado os elementos da diagonal principal por uma constante k.
-
+import random
+constante = float(input('Digite a constante: '))
+linhas = []
+print(f'\nMatriz:')
+for i in range(0, 4):
+  linha = []
+  for x in range(0, 4):
+    valor = random.randint(10,99)
+    linha.append(valor)
+  linhas.append(linha)
+for linha in linhas:
+  for valor in linha: 
+    print(valor, end=" | ")
+  print('')
+print(f'\nElementos da diagonal principal multiplicados por 5: ')
+for i in range(4):
+  linhas[i][i] *= constante
+for linha in linhas:
+  for valor in linha:
+    print(f'{valor:.1f}', end=" | ")
+  print('')
 
 
 # 22) Escreva um algoritmo que:
 # a) leia uma matriz quadrada 20 x 20 de elementos reais;
 # b) divida cada elemento de uma linha da matriz pelo elemento da diagonal principal dessa linha;
 # c) imprima a matriz assim modificada;
-
-
+import random
+linhas = []
+for i in range(0, 20):
+  linha = []
+  for x in range(0, 20):
+    valor = random.randint(10,99)
+    linha.append(valor)
+  linhas.append(linha)
+print(f'\nMatriz: ')
+for linha in linhas:
+  for valor in linha: 
+    print(valor, end=" | ")
+  print('')
+print('')
+print(f'\nElementos divididos pelo valor da diagonal principal: ')
+for i in range(20):
+    diagonal = linhas[i][i]
+    for z in range(20):
+        linhas[i][z] /= diagonal
+print('\nMatriz modificada:')
+for linha in linhas:
+    for valor in linha:
+        print(f'{valor:.2f}', end=' | ')
+    print('')
 
 
 # 23) Faça um algoritmo que:
@@ -253,7 +353,26 @@ print(f'Lista com elementos ordenados: {sorted(vetor)}')
 # b) imprima essa matriz;
 # c) calcule e imprima a soma dos elementos situados abaixo da diagonal principal da matriz,
 # incluindo os elementos da própria diagonal principal.
-
+import random
+linhas = []
+for i in range(0, 10):
+  linha = []
+  for x in range(0, 10):
+    valor = random.randint(10,99)
+    linha.append(valor)
+  linhas.append(linha)
+print(f'\nMatriz: ')
+for linha in linhas:
+  for valor in linha: 
+    print(valor, end=" | ")
+  print('')
+print('')
+soma = 0
+for i in range(10):
+    for z in range(10):
+        if z <= i:
+            soma += linhas[i][z]
+print(f"Soma dos elementos abaixo da diagonal principal: {soma}")
 
 
 # 24) Escreva um algoritmo que leia duas matrizes reais de dimensão 3 x 5, calcule e imprima a sua
