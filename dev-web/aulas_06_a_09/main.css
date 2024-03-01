@@ -1,5 +1,11 @@
+/* Reset padrão */
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    background-image: url("https://lh3.googleusercontent.com/u/0/drive-viewer/AKGpihbHtgDUESSNS7uuSyjgWVbdyQdypWC8jbFposPAVu-aGoPWTGunV9txHqk0w1k3Gdsi3y3KgULYG2N65xr7mFuPYcRy=w958-h927");
+    background-image: url("https://lh3.googleusercontent.com/u/0/drive-viewer/AKGpihag2l38PYDGsCqTmVkiyKmUUKwN7m75wlxdnFzQnRYJYXJKrhmbu-Cbmoqx8deYDGAgTii8tAu98b4PHCAqdmvTFHwv=w1920-h927");
     background-size: cover;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 12px;
@@ -9,6 +15,7 @@ body {
 
 a:link {
     color: #336699;
+    text-decoration: none;
 }
 
 a:visited {
@@ -23,7 +30,7 @@ a:active {
     color: #663300;
 }
 
-a {
+a:hover, a:active {
     text-decoration: none;
 }
 
@@ -55,7 +62,10 @@ dt {
 
 dd {
     font-style: italic;
-    margin: 0.5em 0 1.5em 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0.5em;
+    margin-bottom: 1.5em;
 }
 
 dl {
