@@ -1,7 +1,7 @@
 body {
     margin: 0;
     display: grid;
-    grid-template-rows: 10vh 1fr 8vh; 
+    grid-template-rows: 8vh 1fr 8vh; 
     min-height: 100vh;
     font-family: 'Inter', Arial, Helvetica, sans-serif;
 }
@@ -28,6 +28,23 @@ body {
     font-weight: 300;
     text-decoration: none;
 } 
+
+.card {
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center;
+}
+
+.title-card {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
 .footer {
     grid-row: 3; 
     justify-content: center;
@@ -39,11 +56,11 @@ body {
     display: flex;
     align-items: center;
     text-decoration: none;
-    font-size: 2vh;
+    font-size: 1.7vh;
     font-weight: 300;
     color: #FDFDFD;
 }
 
 .img {
-    height: 4vh;
+    height: 3.5vh;
 }
