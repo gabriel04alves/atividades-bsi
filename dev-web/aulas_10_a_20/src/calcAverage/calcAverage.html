@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/main.css">
+    <link rel="stylesheet" href="../../assets/template.css">
+    <script src="calcAverage.js"></script>
+    <title>Calculadora de média semestral</title>
+</head>
+<body>
+    <div class="header">
+        <img src="../../assets/images/pencil-square.svg" alt="" style="height: 3vh; margin-right: 1vh;">
+        <a href="../../index.html" class="header-title">Lista de dev web</a>
+    </div>
+    <div class="content">
+        <div class="card">
+            <h1 class="title-card">Calculadora de média semestral</h1>
+            <form class="form" action="#">
+                <label for="nota1">Insira a nota da primeira avaliação:</label>
+                <input type="number" name="nota1" id="nota1">
+                <label for="nota2">Insira a nota da segunda avaliação:</label>
+                <input type="number" name="nota2" id="nota2">
+                <button type="button" onclick="calcAverage()">Calcular</button>
+            </form>
+            <div>
+                <p id="mediaSemestral"></p>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <a href="https://github.com/gabriel04alves/atividades-bsi" class="media">
+            <img class="img" src="../../assets/images/github.svg" alt="">
+            <p>/gabriel04alves</p>
+        </a>
+        <a href="https://linkedin.com/in/gabriel04alves" class="media">
+            <img class="img" src="../../assets/images/linkedin.svg" alt="">
+            <p>/gabriel04alves</p>
+        </a>
+    </div>
+</body>
+<style>
+    .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+        min-height: 76vh;
+        margin: 0 4vh;
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form label {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .form input {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-size: 1rem;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #002F50;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    #mediaSemestral {
+        margin-top: 2vh;
+        font-size: 1.2rem;
+    }
+</style>
+</html>
