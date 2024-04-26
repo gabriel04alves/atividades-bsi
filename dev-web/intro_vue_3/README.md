@@ -14,13 +14,15 @@ Instale, também uma extensão do VSCode chamada [es6-string.html](https://marke
 
 No final de cada tutorial, haverá um "Coding Challenge" para colocar os conceitos em prática.
 
-## **2. Criando uma Vue App**
+## **3. Vinculação (Ligação) de Atributos (Attribute Binding)**
 
 ### **Passo 1. Configurando o ambiente de desenvolvimento**
 
 1.1 Crie uma pasta chamada "intro-to-vue-3"
 
-1.2 Para iniciar, faça o download do código inicial no "branch" do [repositório.](https://github.com/csp1po/intro_vue_3/tree/t2-start). Depois extraia este arquivo e copie o seu conteúdo para dentro da pasta criada no passo 1.1.
+>Ignore o passo acima caso já tenha feito o tutorial anterior (Criando um Vue _app_ ).
+
+1.2 Caso queira, para iniciar, faça o download do código inicial no "branch" do [repositório.](https://github.com/csp1po/intro_vue_3/tree/t3-start). Depois extraia este arquivo e copie o seu conteúdo para dentro da pasta criada no passo 1.1.
 
 1.3 No painel esquerdo do VS Code, você verá uma estrutura de diretório que se parece com a figura abaixo.
 
@@ -41,28 +43,35 @@ Dentro do arquivo "**index.html**", o seu conteúdo será:
   </head>
   <body>
     <div id="app">
-      <h1>Product goes here</h1>
+      <div class="nav-bar"></div>
+      
+      <div class="product-display">
+        <div class="product-container">
+          <div class="product-image">
+            <!-- image goes here -->
+          </div>
+          <div class="product-info">
+            <h1>{{ product }}</h1>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Import Js -->
+    <!-- Import App -->
     <script src="./main.js"></script>
+
+    <!-- Mount App -->
+    <script>
+      const mountedApp = app.mount('#app')
+    </script>
   </body>
 </html>
+
 ```
 
 > Observe que neste tutorial estaremos importando a biblioteca do Vue.JS via um link CDN (_content delivery network_). Este tipo de importação se usa somente para fins de prototipagem e aprendizado. Futuramente usaremos a instalação via uma interface de linha de comando (Vue CLI).
 >
 >Observe também que estamos importando um arquivo chamado "**main.js**". O seu conteúdo, por enquanto, é muito simples:
-
-```javascript
-const product = 'Socks'
-```
-
->Outra coisa interessante também, é que no código HTML acima, temos um elemento ``<h1>`` que diz: "**_Product goes here_**". A grande questão agora é: **como vamos mostrar o produto usando o Vue?**.
-
-### **Passo 2. Criando e montando nossa app**
-
-2.1 Abra o arquivo "**main.js**" e substitua o seu conteúdo por este:
 
 ```javascript
 const app = Vue.createApp({
@@ -74,87 +83,114 @@ const app = Vue.createApp({
 })
 ```
 
-2.2 Precisamos agora montar nossa app. Para isto, abra o arquivo "**index.html**" e antes do ``</body>`` adicione o seguinte código:
+### index.html
+
+No código HTML acima, temos uma nova ``<div>``com uma classe chamada ``product-image``:
 
 ```html
-<!-- Mount App -->
-<script>
-    const mountedApp = app.mount('#app')
-</script>
-```
-
->Falamos "_app_", que se refere ao aplicativo que acabamos de criar, e ``.mount()``, que é um método o qual requer um seletor DOM como argumento. Isso nos permite conectar o aplicativo Vue a essa parte do nosso DOM.
-
-2.3 Agora que criamos, importamos e montamos nossa _app_ Vue, podemos começar a mostrar os dados que estão dentro dela. Para renderizar o produto (``product``) dentro do elemento ``<h1>``. Abra o arquivo "**index.html**" e no trecho de código que temos: 
-
-```html
-<div id="app">
-    <h1>Product goes here</h1>
+<div class="product-image">
+  <!-- image goes here -->
 </div>
 ```
 
-, substitua por este:
+>No final deste tutorial, teremos um elemento ``<img>`` aqui que é vinculado de forma reativa a uma nova propriedade chamada ``image`` em nossos dados. Sempre que o valor dessa imagem mudar, ela será atualizada no DOM.
 
-```html
-<div id="app">
-    <h1>{{ product }}</h1>    
-</div>
-```
 
->Agora, se abrirmos o arquivo "**index.html**" no browser (navegador), veremos o produto sendo mostrado. Ver figura abaixo:
+### **Passo 2. Adicionando uma imagem em nossos dados**
 
-![Aplicativo no browser](img_readme/app_browser_start.png)
+>Você lembra que no diretório ``assets`` temos uma pasta chamada ``images``, com imagens para meias verdes e azuis? Vamos direcionar uma dessas imagens para uma nova propriedade de dados em nosso aplicativo Vue. Faremos isso definindo ``image`` igual a um caminho para que ele possa capturar essa imagem.
 
-### **Passo 3. Compreendendo a Instância Vue**
-
-3.1 Quando criamos nosso _app_ Vue, passamos um objeto de opções, o que nos permitiu adicionar algumas propriedades opcionais para configurar o aplicativo. Fazer isso cria nossa instância Vue, que é o coração de nosso aplicativo Vue, que alimenta tudo.
-
-### main.js
-
-```javascript
-const app = Vue.createApp({Options Object})
-```
-
-3.2 Ao importar esse _app_ e montá-lo no DOM, basicamente nós o conectamos a ele (DOM), dando ao nosso HTML uma linha direta com o aplicativo. Dessa forma, nosso template de código pode acessar opções desse _app_, como, por exemplo, seus dados.
-
-![Linha Direta do app](img_readme/linha_direta_app_vue.jpg)
-
-3.3 Se você está se perguntando o que está acontecendo com essa sintaxe de chaves duplas, você pode imaginá-la como um telefone, que tem acesso ao nosso aplicativo Vue. A partir do nosso template, podemos perguntar ao aplicativo: “Ei, qual é o valor do produto?”. E o _app_ responde: “**Socks**”. Quando a página renderiza, vemos a exibição de “**Socks**” na página.
-
->Se essa sintaxe de chaves duplas, ou sintaxe de bigode, como é chamada, for novidade para você, ela nos permite escrever expressões JavaScript. Em outras palavras, ela nos permite executar um código JavaScript válido em nosso HTML.
-
-### **Passo 4. Reatividade do Vue**
-
-4.1 O que aconteceria se alterássemos o valor de ``product`` de "**Socks**" para "**Boots**"?
-
-### main.js
+2.1 Abra o arquivo "**main.js**" e substitua o seu conteúdo por este:
 
 ```javascript
 const app = Vue.createApp({
     data() {
         return {
-            product: 'Boots'  //valor atualizado
+            product: 'Socks',
+            image: './assets/images/socks_green.jpg'
         }
     }
 })
 ```
 
-4.2 Devido a maneira como o Vue funciona, a expressão do elemento ``<h1>`` que depende do produto receberia automaticamente esse novo valor e nosso DOM seria atualizado para exibir “**Boots**”.
+2.2 Agora estamos prontos para adicionar um elemento ``<img>``no nosso template. Para isto, abra o arquivo "**index.html**". Procure o trecho de código abaixo:
+
+```html
+<div class="product-image">
+    <!-- image goes here -->
+</div>```
+
+Agora você deve substituir o conteúdo por este:
+
+```html
+<div class="product-image">
+  <img src="image">
+</div>
+```
+>No atributo "source", diremos ``image`` somente. Por enquanto, isso não vai fazer nada. Queremos que ``src`` extraia o caminho da imagem de nossos dados, semelhante a como extraímos o valor dos dados do ``product`` na expressão ``<h1>`` do tutorial anterior.
+
+
+>Portanto, a questão aqui é: como vinculamos (i.e. bind) o atributo ``src`` aos dados de ``image``? É o que faremos no próximo passo.
+
+
+### **Passo 3. Apresentando a Vinculação de Atributo (Attribute Binding)**
+
+3.1 Para criar um vínculo entre um atributo de um elemento HTML e um valor dos dados do _app_ Vue, usaremos uma diretiva do Vue.JS chamada ``v-bind``. Para isto, abra o arquivo "**index.html**", e altere o conteúdo do elemento ``<img>`` do passo 2.2 como indicado abaixo:
 
 ### index.html
 
 ```javascript
-<div id="app">
-  <h1>{{ product }}</h1> <! -- receberá de forma reativa todas as atualizações de "product" -->
-</div>
+<img v-bind:src="image">
+```
+>Agora, criamos um _vínculo reativo_ entre o atributo ``src="image"``e os próprios dados da imagem. Ver figura abaixo.
+
+![Exemplo diretiva v-bind](img_readme/v-bind_directive_example.png)
+
+3.2 Aogra abra o arquivo "**index.html**" no browser. Você verá a página abaixo.
+
+![Página Meias Verdes](img_readme/socks_green.jpg)
+
+
+### **Passo 4. Compreendendo o v-bind**
+
+4.1 Como exatamente a diretiva ``v-bind`` está funcionando? Nós a usamos para vincular dinamicamente um atributo a uma expressão. Nesse caso, o atributo é ``src`` e a expressão é o que estiver entre as aspas desse atributo: ``"image"``. Para mostrar melhor, observe abaixo:
+
+### index.html
+
+```javascript
+<img v-bind:src="image"> <! -- src attribute bound to the image data -->
 ```
 
-4.3 Isso ocorre porque o Vue é reativo. Internamente, ele tem todo um sistema de reatividade que lida com atualizações. Quando  os valores dos dados mudam, qualquer lugar que dependa desses dados será atualizado automaticamente para nós. Não precisamos fazer nada para que isso aconteça.
+>Se você está pensando que isso não se parece com uma típica expressão JavaScript, você pode imaginá-la assim: ``v-bind:src="{{ image }}"``. Implicitamente, o Vue vai avaliá-lo da mesma forma. Veja a figura abaixo.
+
+![Exemplo v-bind](img_readme/v-bind_example.jpg)
+
+
+4.2 Por causa do sistema de reatividade do Vue, se atualizarmos nossos dados da imagem para um caminho que aponte para a imagem das meias azuis (``image: './assets/images/socks_blue.jpg'``), a expressão à qual nosso atributo ``src`` está vinculado seria atualizado e nosso navegador exibiria a imagem das meias azuis. A figura abaixo mostra como esta vinculação é reativa e dinâmica.
+
+![Reatividade Dinâmica v-bind](img_readme/reatividade_dinamica_v-bind_blue.png)
+
+
+4.3 O uso da diretiva ``v-bind`` é tão comum que existe uma abreviação (_shorthand_) para isso, que é usar apenas os dois pontos:
+
+```html
+<img :src="image"> 
+```
+
+>Assim como existem tantos atributos HTML diferentes, existem muitos casos de uso para o ``v-bind``. Por exemplo, você pode vincular uma descrição a um atributo ``alt``, vincular uma URL a um ``href``, vincular alguns estilos dinâmicos a uma classe (``class``) ou atributo de estilo (``style``), desativar e ativar um botão e assim por diante. Ver figura abaixo.
+
+![Casos de Uso v-bind](img_readme/v-bind_use_cases.png)
+
 
 ### **Passo 5. Coding Challenge**
 
-5.1 Adicione uma ``description`` ao objeto de dados
+5.1 Adicione um ``url`` ao objeto de dados
 
-5.2 Mostre a ``description``usando uma expressão dentro de um elemento ``<p>``.
+5.2 Use ``v-bind``para vincular este URL para um atributo ``href``do elemento ``<a>``.
+
+5.3 Abra o arquivo "**index.html**" no browser. Você verá algo assim.
+
+![Code Challenge t3](img_readme/code_challenge_t3.png)
+
 
 
