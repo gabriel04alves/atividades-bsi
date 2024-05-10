@@ -14,7 +14,7 @@ Instale, também uma extensão do VSCode chamada [es6-string.html](https://marke
 
 No final de cada tutorial, haverá um "***Coding Challenge***" para colocar os conceitos em prática.
 
-## **Tutorial 7. Vinculação de Classe e Estilo (Class & Style Binding)**
+## **Tutorial 8. Propriedades Calculadas (Computed Properties)**
 
 ### **Passo 1. Configurando o ambiente de desenvolvimento**
 
@@ -22,7 +22,7 @@ No final de cada tutorial, haverá um "***Coding Challenge***" para colocar os c
 
 >Ignore o passo acima caso já tenha feito o **Tutorial 2** (Criando um Vue _app_ ).
 
-1.2 Caso queira, para iniciar, faça o download do código inicial no "branch" do [repositório.](https://github.com/csp1po/intro_vue_3/tree/t7-start). Depois extraia este arquivo e copie o seu conteúdo para dentro da pasta criada no passo 1.1.
+1.2 Caso queira, para iniciar, faça o download do código inicial no "branch" do [repositório.](https://github.com/csp1po/intro_vue_3/tree/t8-start). Depois extraia este arquivo e copie o seu conteúdo para dentro da pasta criada no passo 1.1.
 
 1.3 No painel esquerdo do VS Code, você verá uma estrutura de diretório que se parece com a figura abaixo.
 
@@ -61,11 +61,12 @@ Dentro do arquivo "**index.html**", o seu conteúdo será:
             </ul>
 
             <div 
+              class="color-circle" 
               v-for="variant in variants" 
               :key="variant.id" 
               @mouseover="updateImage(variant.image)" 
-            >{{ variant.color }}</div>
-            <button class="button" @click="addToCart">Add to Cart</button>
+              :style="{ backgroundColor: variant.color }"></div>
+            <button class="button" :class="{ disabledButton: !inStock }" :disabled="!inStock" v-on:click="addToCart">Add to Cart</button>
           </div>
         </div>
       </div>
@@ -80,13 +81,12 @@ Dentro do arquivo "**index.html**", o seu conteúdo será:
     </script>
   </body>
 </html>
-
 ```
 
 > Observe que neste tutorial estaremos importando a biblioteca do Vue.JS via um link CDN (_Content Delivery Network_). Este tipo de importação se usa somente para fins de prototipagem e aprendizado. Futuramente usaremos a instalação via uma interface de linha de comando (Vue CLI).
 >
 
-Observe também que estamos importando um arquivo chamado "**main.js**". O seu conteúdo, por enquanto, é:
+>Observe também que estamos importando um arquivo chamado "**main.js**". O seu conteúdo, por enquanto, é:
 
 ```javascript
 const app = Vue.createApp({
@@ -113,225 +113,211 @@ const app = Vue.createApp({
         }
     }
 })
-
 ```
 
->Neste tutorial, veremos o conceito de vinculação de classe e estilo.(_Class and Style Binding_).
+>Neste tutorial, veremos o conceito de propriedades calculadas.(_Computed Properties_).
 >
 >>Ao abrir o arquivo "**index.html**" no browser, você verá a figura abaixo.
 
-![event_handling_html_inicial](img_readme/event_handling_html_inicial.png)
+![computed_properties_html_inicial](img_readme/computed_properties_html_inicial.png)
 
->No Tutorial 06, adicionamos um recurso onde, ao passar o mouse sobre as palavras ``green`` ou ``blue``, a imagem que está sendo exibida será atualizada; ou seja, meias verdes ou azuis, respectivamente. Mas a experiência do usuário (UX) não seria melhor se, em vez de passar o mouse sobre as palavras "verde" ou "azul", passássemos o mouse sobre as cores reais **verde** ou **azul**? É o que faremos no próximo passo.
+>Neste Tutorial vamos atualizar a imagem variante ("**variant image**") e verificar se ela está em estoque ou não, usando as propriedades calculadas (ou computadas). E é o que faremos no próximo passo.
 
 
-### **Passo 2. Vinculando o Estilo**
-
-A grande pergunta aqui é: **como podemos mostrar as próprias cores variantes (``variant colors``)**? 
+### **Passo 2. Uma Simples Propriedade Calculada**
 
 2.1 Abra o arquivo "**index.html**" e procure o pelo trecho de código abaixo:
 
 ```html
-<div 
-   v-for="variant in variants" 
-   :key="variant.id" 
-   @mouseover="updateImage(variant.image)">
-    {{ variant.color }}
-</div>
+<h1>{{ product }}</h1>
 ```
 
 Altere o código acima para:
 
 ```html
-<div 
-  v-for="variant in variants" 
-  :key="variant.id" 
-  @mouseover="updateImage(variant.image)" 
-  class="color-circle">
-  {{ variant.color }} 
-</div>
+<h1>{{ brand + ' ' + product }}</h1>
 ```
 
->Observe que esta classe já está definida no nosso arquivo ``styles.css``. Veja abaixo.
+Observe também que no arquivo "**main.js**" existe um trecho de código onde temos uma nova propriedade dos dados:
 
-```css
-.color-circle {
-  width: 50px;
-  height: 50px;
-  margin-top: 8px;
-  border: 2px solid #d8d8d8;
-  border-radius: 50%;
+```javascript
+data() {
+   return {
+      product: 'Socks',
+      brand: 'Vue Mastery'
+   }   
 }
 ```
 
->Como você pode ver, ele simplesmente transforma nossa ``<div>`` em um círculo com 50px de diâmetro. Veja a figura abaixo.
+O que fizemos foi combinar a propriedade ``brand`` com ``product`` em nosso template (**Passo 2.1**).
 
-![circle_50_green_blue](img_readme/circle_50_green_blue.png)
- 
 
-Assim como parece, queremos vincular estilos à "**div**" das variantes. Faremos isso usando ``v-bind`` (ou sua abreviação: ``:``) no atributo ``style`` e vinculando um objeto a ele. Também precisamos definir o ``backgroundColor`` dessa ``<div>`` para que seja igual ao ``variant.color``. Então, em vez de imprimir essas strings (i.e. “*green*” e “*blue*”), estamos usando-as para definir a cor de fundo de nossos círculos. 
+2.2 Abra o arquivo "**index.html**" no browser, e você verá a imagem abaixo:
 
-2.2 Para isto, abra o arquivo "**index.html**" e procure o pelo trecho de código abaixo:
+![computed_properties_html_atualizada](img_readme/computed_properties_html_atualizada.png)
+
+Ao verificarmos isso no navegador, veremos “**Vue Mastery Socks**” exibido. Mas não seria legal se, em vez de lidar com essa lógica no HTML interno, nosso aplicativo pudesse calcular esse valor para nós? Por exemplo, pegar a marca e o produto, somar e retornar esse novo valor.
+
+As propriedades calculadas são exatamente isto. Podemos adicioná-las a um aplicativo Vue que calcula os valores para nós. Eles nos ajudam a manter a lógica computacional fora do modelo e nos fornecem melhorias de desempenho que serão abordadas futuramente. Por enquanto, vamos transformar este exemplo simples em uma propriedade computada. Vamos alterar a expressão do elemento ``<h1>``.
+
+2.3 Para isto, abra o arquivo "**index.html**" no browser. Agora observe a linha abaixo:
+
+```html
+<h1>{{ brand + ' ' + product }}</h1>
+```
+E altere o código para:
+
+```html
+<h1>{{ title }}
+```
+> Agora, ``title`` é o nome de uma propriedade computada que criaremos agora. Primeiro, adicionaremos a opção computada ao aplicativo, logo abaixo de nossos métodos, e então criaremos a propriedade ``title``.
+
+
+2.4 Abra o arquivo "**main.js**" e adicione o trecho de código abaixo:
+
+```javascript
+...
+computed: {
+   title() {
+    return this.brand + ' ' + this.product
+   }
+}
+```
+
+2.5 Abra novamente o arquivo "**index.html**" no browser. Ao verificarmos o navegador, ainda veremos "**Vue Mastery Socks**" sendo exibida, exceto que agora abstraímos a lógica computacional do modelo e a incluímos perfeitamente no objeto de opções.
+
+![computed_properties_html_atualizada_2](img_readme/computed_properties_html_atualizada_2.png)
+
+
+
+### **Passo 3. Compreendendo as Propriedades Calculadas**
+
+Vamos dar uma olhada mais profunda em como isto está funcionando. Pense nelas como se fossem uma calculadora, que computa (i.e. calcula) valores para nós. Tal calculadora pega nossos valores (``brand``e ``product``), adiciona-os e nos dá o resultado. Observe a figura abaixo. 
+
+![computed_properties_calculadora](img_readme/computed_properties_calculadora.jpg)
+
+> Como foi mencionado anteriormente, as propriedades computadas nos fornecem uma melhoria de desempenho. Isso ocorre porque elas armazenam em cache o valor calculado. O valor ("**Vue Mastery Socks**") é armazenado e atualizado apenas quando necessário, quando uma de suas dependências muda. Por exemplo, se a marca mudasse de '**Vue Mastery**' para '**Node Mastery**', nossa propriedade computada receberia essa nova dependência da marca (``brand``), então recalcularia e retornaria o novo valor: '**Node Mastery Socks**'.
+
+Agora que estamos começando a entender as propriedades computadas, vamos implementar um exemplo mais prático em nossa Vue _app_.
+
+
+### **Passo 4. Calculando (Computando) a Imagem e a Quantidade**
+
+Voltando ao nosso código, vamos adicionar uma nova propriedade de quantidade aos nossos objetos variantes.
+
+4.1 Abra o arquivo "**main.js**", e altere as linhas que tratam das variantes para:
+
+```javascript
+variants: [
+    { id: 2234, color: 'green', image: './assets/images/socks_green.jpg', quantity: 50 },
+    { id: 2235, color: 'blue', image: './assets/images/socks_blue.jpg', quantity: 0 },
+]
+```
+
+>Observe agora como as meias verdes (_green socks_) têm uma quantidade de 50 enquanto as meias azuis (_blue socks_) têm 0. Em outras palavras, as verdes estão em estoque e as azuis estão esgotadas. No entanto, atualmente exibimos “**In Stock**” ou “**Out of Stock**” com base no valor de dados em estoque, que não reflete mais a verdade sobre nosso produto e suas quantidades variantes. Portanto, teremos que criar uma propriedade calculada que possamos usar para exibir ou a primeira ou a segunda mensagem acima, com base nessas novas quantidades.
+
+Você lembra como atualizamos a imagem da variante, com base em qual cor está passando o mouse? Em vez do evento ``mouseover`` acionar o método ``updateImage()``, ele agora acionará um novo método chamado ``updateVariant()``.
+
+4.2 Abra o arquivo "**index.html**" e observe o trecho de código abaixo:
 
 ```html
 <div 
-  v-for="variant in variants" 
-  :key="variant.id" 
-  @mouseover="updateImage(variant.image)" 
-  class="color-circle">
-  {{ variant.color }} 
+   class="color-circle" 
+   v-for="variant in variants" 
+   :key="variant.id" 
+   @mouseover="updateImage(variant.image)" 
+   :style="{ backgroundColor: variant.color }">
 </div>
 ```
 
-Agora altere o código para:
+Altere-o para:
 
 ```html
 <div 
-  v-for="variant in variants" 
+  v-for="(variant, index) in variants" 
   :key="variant.id" 
-  @mouseover="updateImage(variant.image)" 
+  @mouseover="updateVariant(index)" <!-- novo método -->
   class="color-circle" 
   :style="{ backgroundColor: variant.color }">
 </div>
 ```
 
-2.3 Abra o arquivo "**index.html**" no browser. Você verá algo assim.
+Observe como estamos passando o índice (``index``) da variante atualmente em foco (``hover``): ``updateVariant(index)``. Obtivemos acesso a esse índice adicionando-o como um segundo parâmetro em nossa diretiva ``v-for``:
 
-![v-bind_colors_green_blue](img_readme/v-bind_colors_green_blue.png)
+``v-for="(variant, index) in variants"``
 
+Por que estamos passando ``index``? Vamos usá-lo para informar ao nosso aplicativo qual variante está passando o mouse no momento, para que ele possa usar essa informação para acionar a atualização da imagem **E** se essa variante está em estoque ou não.
 
-### **Passo 3. Compreendendo a Vinculação de Estilos (Style Binding)**
+4.3 Agora abra o arquivo "**main.js**" e adicione uma nova propriedade de dados ao nosso aplicativo, que será atualizada para igualar esse índice:
 
-Vamos dar uma olhada mais profunda em como isto está funcionando. Observe a figura abaixo.
-
-![v-bind_style_how_works](img_readme/v-bind_style_how_works.jpg)
-
-Na nossa ``<div>`` variante, adicionamos o atributo ``<style>`` e vinculamos um objeto de estilo a ele. Veja o código:
-
-```html
-<div 
-  ...
-  :style="{ backgroundColor: variant.color }">
-</div>
-```
-
-Esse objeto de estilo tem a propriedade CSS ``backgroundColor``, e a estamos definindo igual a qualquer que seja a cor variante no momento da iteração ``v-for``. Na primeira iteração, ``variant.color`` é ``green``. O VueJS pega essas informações e as converte no código: ``style="{ backgroundColor: green }"``. E então imprime um círculo de fundo verde. Este processo é repetido para a segunda ``variant.color`` (i.e. ``blue``) para criar o círculo azul.
-
-
-#### Observação #1: usando os modos "Camel Case" ou "Kebab Case"
-
-Antes de prosseguir, convém fazer uma explanação sobre estes conceitos. De acordo com o Chat-GPT:
-
-_Camel Case e Kebab Case são duas convenções de nomeação de identificadores em programação_.
-
-_No modo Camel case, as palavras são unidas sem espaços e a primeira letra de cada palavra, exceto a primeira, é capitalizada. Por exemplo, "camelCase", "meuNomeDeVariável", "dataDeNascimento"_.
-
-_No modo Kebab case, também conhecido como dash case, as palavras são unidas com hífens e todas as letras são minúsculas. Por exemplo, "kebab-case", "meu-nome-de-variável", "data-de-nascimento"_. 
-
-_Ambas as convenções são comumente usadas em programação para nomear variáveis, funções e outros identificadores. A escolha entre elas geralmente é uma questão de preferência pessoal ou de convenção adotada pela comunidade de programadores._
-
-Há algumas coisas importantes a considerar ao usar vinculação de estilo. Observe o trecho de código abaixo.
-
-``<div :style="{ backgroundColor: variant.color }"></div>``
-
-Na expressão acima, lembre-se que este objeto de estilo é todo JavaScript. É por isso que foi usado o modo ``camelCase`` no nome da propriedade (i.e. ``backgroundColor``). Se tivéssemos colocado ``background-color``, isso teria sido interpretado como um sinal de menos (subtração). Mas não estamos fazendo nenhuma operação matemática aqui. Estamos definindo um nome de uma propriedade CSS!!.
-
-Então, como estamos definindo um objeto JavaScript, temos que usar o modo ``camelCase``. Caso queiramos usar o modo ``kebab-case``, temos que colocar o nome da propridade entre aspas para evitar a má interpretação matemática, assim:
-
-``<div :style="{ 'background-color': variant.color }"></div>``
-
-Ambas opções funcionarão, desde que você se lembre de colocar as aspas.
-
-
-#### Observação #2: Alternativa para Vinculação de Estilo: usando Objetos"
-
-Às vezes, você pode querer adicionar vários estilos a um elemento, mas adicioná-los todos em linha ("*inline*") pode ser confuso. Nessas situações, podemos vincular a um objeto de estilo inteiro que reside em nossos dados (``main.js``). Veja a figura abaixo.
-
-![v-bind_style_objects](img_readme/v-bind_style_objects.jpg)
-
-Agora que examinamos o tópico de vinculação de estilo, vamos examinar um tópico semelhante: vinculação de classe.
-
-
-### **Passo 4. Vinculação de Classe (Class Binding)**
-
-Voltando ao nosso aplicativo, você notará que quando nosso valor de dados ``inStock`` for falso, ainda podemos clicar no botão ``Add to Cart`` e incrementar o valor do carrinho. Mas se o produto estiver esgotado, talvez não queiramos que o usuário consiga adicionar o produto. Então, vamos mudar esse comportamento, desabilitando o botão. E sempre que ``inStock`` for ``false`` e fazendo o botão parecer desabilitado, usando "class binding".
-
-4.1 Para começar, usaremos a abreviação de ``v-bind`` no atributo ``disabled`` para adicioná-lo sempre que nosso produto não estiver em estoque. Abra o arquivo "**index.html**", e altere as linhas do elemento ``<button>`` para:
-
-```html
-<button 
-  class="button" 
-  :disabled="!inStock" 
-  @click="addToCart">
-  Add to Cart
-</button>
-```
-
->Agora, sempre que ``inStock`` for ``false`` e clicarmos no botão ``Add to Cart``, nada acontecerá, pois ele está desativado. Porém, o botão ainda parece ativo, e isto é enganoso para o usuário. Então, vamos usar "class binding" para adicionar uma classe chamada ``disabledButton`` também, sempre que ``inStock`` for ``false``.
-
-
-4.2 Você verá em nosso arquivo CSS que já temos essa classe chamada ``disabledButton``, que define a ``background-color`` para cinza (_gray_) e torna o cursor não permitido para uso. Agora abra o arquivo "**styles.css**" e altere (caso não esteja) o trecho de código onde está a ``disabledButton`` para:
-
-```html
-.disabledButton {
-  background-color: #d8d8d8;
-  cursor: not-allowed;
+```javascript
+data() {
+  return {
+    ...
+    selectedVariant: 0,
+    ...
+  }
 }
 ```
 
-Para aplicar esta classe condicionalmente, com base no valor de ``inStock``, usaremos a abreviação de ``v-bind`` no atributo ``class``, e usaremos uma expressão que adiciona (ou não) a classe ``disabledButton``  sempre que ``!inStock``.
 
-4.3 Agora abra o arquivo "**index.html**" e altere o trecho de código do elemento ``<button>`` para:
+4.4 Ainda dentro do arquivo do Passo anterior (**4.3**), que é o "**main.js**" e adicione o trecho de código abaixo.
+
+```javascript
+methods: {
+    ...
+    updateVariant(index) {
+        this.selectedVariant = index
+    }
+},
+```
+
+> Nosso método ``updateVariant()`` definirá o valor de ``selectedVariant`` igual ao índice da variante em que você está passando o mouse (i.e. _hovering_).
+
+Agora que implementamos uma maneira de nosso aplicativo saber com qual variante de produto está sendo envolvido, podemos usar essas informações para acionar a "computação" de qual imagem mostrar e se mostrar a mensagem "**In Stock**" ou "**Out of Stock**”, com base em qual variante o usuário está passando o mouse.
+
+
+4.5 Agora estamos prontos para excluir ``image`` e ``inStock`` de nossos dados e substituí-los por propriedades computadas com os mesmos nomes. Para isto, abra o arquivo "**main.js**", e adicione o código abaixo na propriedade ``computed``.
+
+```javascript
+computed: {
+...
+   image() {
+      return this.variants[this.selectedVariant].image
+   },
+   inStock() {
+      return this.variants[this.selectedVariant].quantity
+   }
+```
+
+> O que fizemos? Estamos direcionando o primeiro ou o segundo elemento de nossa _array_ de variantes com base em ``selectedVariant``, que é 0 ou 1, dependendo de qual círculo da cor variante o mouse está passando. Em seguida, usamos apenas a notação de ponto para capturar a imagem dessa variante.
+
+4.6 Ao verificar isso no browser, quando passamos o mouse sobre os círculos de cores, não apenas atualizamos a imagem da variante, mas também exibimos se essa variante está em estoque ou fora de estoque, usando sua quantidade. A figura abaixo mostra isto.
+
+![computed_properties_hover_color_circles](img_readme/computed_properties_hover_color_circles.jpg)
+
+
+4.7 Observe na figura acima como o botão ainda está atualizando automaticamente para nós, ativando e desativando. Isso porque, em nosso modelo, ainda estamos usando ``inStock``. Portanto, temos que atualizar o arquivo "**index.html**". Abra-o e atualize o elemento ``<button>`` com o conteúdo abaixo.
 
 ```html
 <button 
-  class="button" 
-  :class="{ disabledButton: !inStock }" 
-  :disabled="!inStock" 
-  @click="addToCart">
-  Add to Cart
-</button>
+   class="button" 
+   :class="{ disabledButton: !inStock }" 
+   :disabled="!inStock" 
+   v-on:click="addToCart">Add to Cart</button>
 ```
 
->A partir de agora, sempre que ``inStock`` for ``false``, o botão não só será desabilitado, como também aparecerá desabilitado.
->
+> Agora ``inStock`` não é mais uma propriedade de dados. Ela é a nova propriedade calculada.
 
 
-4.4 Abra o arquivo "**index.html**" no browser. Você verá algo assim.
+### **Passo 5. Coding Challenge**
 
-![v-on_directive_disabled_button](img_readme/v-on_directive_disabled_button.jpg)
+5.1 Adicione um valor booleano ``onSale`` aos dados.
 
-### **Passo 5. Múltiplos Nomes de Classes**
+5.2 Use uma propriedade computada para exibir a string: _‘brand + ’ ’ + product + ’ ’ is on sale’_, sempre que ``onSale`` for verdadeiro.
 
-Ao começar a vinculação de classe, há algumas coisas a serem observadas. Por exemplo, o que acontece quando já temos uma classe existente e queremos adicionar condicionalmente outra com base em um valor de dados dentro de uma mesma ``<div>``?
+5.3 Abra o arquivo "**index.html**" no browser. Você verá algo assim.
 
-Por exemplo, se já tivermos uma classe chamada ``color-circle`` em uma ``<div>`` e adicionarmos uma classe chamada ``active`` condicionalmente, como isso ficará? A figura abaixo mostra o que pretendemos fazer.
-
-![active_class_condition](img_readme/active_class_condition.jpg)
-
-Essas classes serão combinadas da seguinte forma: 
-
-```html
-<div class="color-circle active"></div>
-```
-
-### **Passo 6. Operadores Ternários**
-
-Uma ferramenta útil que a vinculação de classe nos oferece é a capacidade de usar operadores ternários em linha para adicionar classes diferentes com base em uma condição. Observe a figura abaixo.
-
-![ternary_operators_class_binding](img_readme/ternary_operators_class_binding.jpg)
-
-Nesse caso, como ``isActive`` é ``true``, estamos de fato adicionando a classe chamada ``activeClass``. Caso seja ``false``, não adicionaríamos nenhuma classe (``''``). Alternativamente, poderíamos ter adicionado uma classe totalmente diferente.
-
-As variações na sintaxe e os casos de uso que acabamos de praticar com vinculação de estilo e classe, são apenas o começo. Portanto, recomenda-se verificar a documentação do Vue para mais casos de uso e exemplos.
-
-### **Passo 7. Coding Challenge**
-
-7.1 Vincule a classe ``out-of-stock-img`` à sua imagem correspondente sempre que ``inStock`` for ``false``.
-
-
-7.2 Abra o arquivo "**index.html**" no browser. Você verá algo assim.
-
-![Code Challenge t7](img_readme/code_challenge_t7.png)
+![code_challenge_t8](img_readme/code_challenge_t8.png)
 
 
