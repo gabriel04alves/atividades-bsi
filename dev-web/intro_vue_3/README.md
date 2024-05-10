@@ -14,7 +14,7 @@ Instale, também uma extensão do VSCode chamada [es6-string.html](https://marke
 
 No final de cada tutorial, haverá um "Coding Challenge" para colocar os conceitos em prática.
 
-## **4. Renderização Condicional**
+## **5. Renderização de Lista**
 
 ### **Passo 1. Configurando o ambiente de desenvolvimento**
 
@@ -22,7 +22,7 @@ No final de cada tutorial, haverá um "Coding Challenge" para colocar os conceit
 
 >Ignore o passo acima caso já tenha feito o **Tutorial 2** (Criando um Vue _app_ ).
 
-1.2 Caso queira, para iniciar, faça o download do código inicial no "branch" do [repositório.](https://github.com/csp1po/intro_vue_3/tree/t4-start). Depois extraia este arquivo e copie o seu conteúdo para dentro da pasta criada no passo 1.1.
+1.2 Caso queira, para iniciar, faça o download do código inicial no "branch" do [repositório.](https://github.com/csp1po/intro_vue_3/tree/t5-start). Depois extraia este arquivo e copie o seu conteúdo para dentro da pasta criada no passo 1.1.
 
 1.3 No painel esquerdo do VS Code, você verá uma estrutura de diretório que se parece com a figura abaixo.
 
@@ -51,6 +51,8 @@ Dentro do arquivo "**index.html**", o seu conteúdo será:
           </div>
           <div class="product-info">
             <h1>{{ product }}</h1>
+            <p v-if="inStock">Em Estoque</p>
+            <p v-else>Fora de Estoque</p>
           </div>
         </div>
       </div>
@@ -76,36 +78,62 @@ const app = Vue.createApp({
     data() {
         return {
             product: 'Socks',
-            image: './assets/images/socks_blue.jpg'
+            image: './assets/images/socks_blue.jpg',
+            inStock: true,
+            details: ['50% cotton', '30% wool', '20% polyester']
         }
     }
 })
 ```
 
->No final deste tutorial, queremos exibir diferentes elementos HTML com base em uma condição. Exibiremos um elemento ``<p>`` que diz "**em estoque**" quando nosso produto está em estoque ou outro elemento ``<p>`` que diz "**fora de estoque**" quando não está.
+>No final deste tutorial, queremos renderizar listas HTML de uma _array_ em nossos dados. Em outras palavras, como vamos mostrar ``details``como uma lista?
 
-### **Passo 2. Renderizar ou Não Renderizar**
+
+### **Passo 2. Efetuando um "*looping*" em _arrays_ de dados**
 
 2.1 Abra o arquivo "**index.html**" e procure o pelo trecho de código abaixo:
 
 ```html
 <div class="product-info">
     <h1>{{ product }}</h1>
+    <p v-if="inStock">Em Estoque</p>
+    <p v-else>Fora de Estoque</p>
 </div>
 ```
 
-2.2 Agora vamos adicionar dois elementos ``<p>``. Para isto, abra o arquivo "**index.html**", e substitua o trecho de código do passo 2.1 pelo que está abaixo:
+2.2 Agora vamos adicionar uma lista não ordenada (``<ul>``) no código acima (**Passo 2.1**). Para isto, abra o arquivo "**index.html**", e substitua o trecho de código pelo que está abaixo:
 
 ```html
 <div class="product-info">
-   <h1>{{ product }}</h1>
-   <p>Em Estoque</p>
-   <p>Fora de Estoque</p>
-</div>
+    <h1>{{ product }}</h1>
+    <p v-if="inStock">Em Estoquek</p>
+    <p v-else>Fora de Estoque</p>
+    <ul>
+       <li v-for="detail in details">{{ detail }}</li>
+    </ul>
 ```
->Queremos que apenas um deles apareça dependendo se nosso produto está em estoque ou não. Então vamos para o objeto de dados do nosso _app_ Vue e adicionamos um valor booleano ``inStock``.
 
-2.3 Abra o arquivo "**main.js**" e troque o seu conteúdo por este:
+>Usamos uma diretiva do Vue chamada ``v-for``. Dentro da expressão do ``v-for``, escrevemos: ``detail in details``. Aqui, ``details`` refere-se ao array ``details`` em nossos dados, e ``detail`` é o _alias_ (apelido) para o elemento atual desse array, já que estamos iterando por ele para imprimir um novo elemento ``<li>``.
+
+>Cada ``<li>`` exibirá esse elemento do _array_ porque no HTML interno escrevemos uma expressão: ``{{ detail }}`` para imprimir cada detalhe.  
+
+2.3 Agora abra o arquivo "**index.html**" no browser. Veremos uma lista de detalhes. Ver a figura abaixo.
+
+![v-for list details](img_readme/v-for_directive_list_details.png)
+
+Surge, então uma pergunta. Mas como a diretiva ``v-for`` está realmente funcionando? A figura abaixo mostra o funcionamento desta diretiva.
+
+![v-for work](img_readme/v-for_work.png)
+
+O _alias_ ``detail`` efetua um "_looping_" sobre a coleção de dados (_array_) que está no arquivo "**main.js**", e, a cada iteração, um elemento da lista (i.e. _array_) é mostrado na página HTML.
+
+
+
+### **Passo 3. Cores Variantes do Produto**
+
+Para nos familiarizarmos com a renderização de lista usando ``v-for``, trabalharemos em outro exemplo em nosso _app_. Vamos adicionar uma _array_ de variantes aos nossos dados:
+
+3.1  Abra o arquivo "**main.js**", e troque seu conteúdo pelo código abaixo.
 
 ```javascript
 const app = Vue.createApp({
@@ -113,112 +141,60 @@ const app = Vue.createApp({
         return {
             product: 'Socks',
             image: './assets/images/socks_blue.jpg',
-            inStock: true   //new data property
+            inStock: true,
+            details: ['50% cotton', '30% wool', '20% polyester'],
+            variants: [
+              { id: 2234, color: 'green' },
+              { id: 2235, color: 'blue' },
+            ]
         }
     }
 })
 ```
 
->Agora que adicionamos os elementos que queremos renderizar condicionalmente e a condição (``inStock``) que usaremos para decidir qual renderizar, estamos prontos para aprender sobre outra diretiva Vue.
+>Agora temos um _array_ que contém um objeto para cada variante do nosso produto. Estas variantes possuem um ``id`` e uma ``color``. Portanto, para nossa próxima tarefa, vamos imprimir cada cor variante e usaremos o id para ajudar o Vue a acompanhar os itens de nossa lista.
 
+3.2 No arquivo "**index.html**", adicione o código abaixo logo após o elemento ``<ul>``.
 
-### **Passo 3. A Diretira v-if**
-
-3.1 Podemos adicionar a diretiva ``v-if`` em um elemento para renderizá-lo com base em uma condição, da seguinte maneira. No arquivo "**index.html**", na linha onde temos ``<p>Em Estoque</p>``, troque-a por ``<p v-if="inStock">Em Estoque</p>``.
-
->Agora, este elemento será renderizado somente se ``inStock`` for verdadeiro. Podemos combinar a diretiva ``v-if`` com sua diretiva irmã ``v-else`` para exibir outro elemento como substituto se a primeira condição for falsa. 
-
-3.2 No arquivo "**index.html**", na linha onde temos ``<p>Fora de Estoque</p>``, troque-a por ``<p v-else>Fora de Estoque</p>``.
-
->Veja a figura abaixo.
-
->![Exemplo diretiva v-bind](img_readme/v-if_directive_example.png)
-
-Agora, se ``inStock`` possui valor ``false``, iremos ver a mensagem "**Fora de Estoque**" renderizado na página.
-
-###Vamos testar as duas condições
+```html
+<div v-for="variant in variants">{{ variant.color }}</div>
+```
 
 3.3 Agora abra o arquivo "**index.html**" no browser. Você verá a página abaixo.
 
-![v-if result true](img_readme/v-if_directive_result_v.png)
+![v-if result true](img_readme/v-for_directive_list_variants_1.png)
 
-3.4 Abra o arquivo "**main.js**" e altere o valor da propriedade ``inStock`` para ``false``. Após isto, abra o arquivo "**index.html**" no browser. Você verá a figura abaixo.
-
-![v-if result false](img_readme/v-if_directive_result_f.png)
+>Observe que estamos usando a notação de ponto (_dot notation_) para imprimir cada variante à medida que percorremos a _array_ chamada de ``variants``.
 
 
-### **Passo 4. Mostrar e Ocultar (Show and Hide)**
+### **Passo 4. Atributo de chave (key attribute): essencial para itens de lista**
 
-Vale a pena notar que você nem sempre precisa emparelhar ``v-if`` com ``v-else``. Existem muitos casos de uso em que não há necessidade de um elemento alternativo para renderizar. No entanto, nesses casos, às vezes é uma opção melhor usar a diretiva ``v-show``. 
-
-Poderíamos codificar assim:
-
-``<p v-show="inStock">Em Estoque</p>``
-
->A diretiva ``v-show`` é usada para alternar a **visibilidade** de um elemento em vez de adicionar e remover totalmente o elemento do DOM, como ``v-if`` faz.
-
-Esta é uma opção de melhor desempenho se você tiver algo que está aparecendo ou desaparecendo na tela com frequência. Podemos verificar isso definindo a propriedade ``inStock`` como ``false`` e exibindo o elemento nas ferramentas do desenvolvedor do navegador. Quando ``v-show`` é usado, podemos ver que o elemento ainda está presente no DOM, mas agora está oculto com um estilo de exibição embutido: nenhum; adicionado a ele. Ver abaixo.
+4.1 Vamos alterar a linha de código do **Passo 3.3**. Abra o arquivo "**index.html**", e altere a linha para:
 
 ```html
-<p style="display: none;">Em Estoque</p>
+<div v-for="variant in variants" :key="variant.id">{{ variant.color }}</div>
 ```
+>Surge, então a pergunta: Mas o que esse atributo ``:key`` está fazendo aí?
 
-### **Passo 5. Lógica Condicional Encadeada**
+>Ao dizer ``:key="variant.id"``, estamos usando a abreviação do ``v-bind`` para vincular o ``id`` da variante ao atributo ``key``. Isso dá a cada elemento DOM uma chave exclusiva para que o Vue possa compreender o elemento e não perdê-lo conforme as coisas são atualizadas no _app_.
 
-No **Passo 3**, vimos ``v-if`` com ``v-else``. Agora vamos dar uma olhada em como podemos adicionar camadas adicionais de lógica condicional.
+>Isso fornece algumas melhorias de desempenho e, posteriormente, se você estiver fazendo algo como animar seus elementos, descobrirá que o atributo ``key`` realmente ajuda o Vue a gerenciá-los efetivamente à medida que eles se movem pelo DOM.
 
-5.1 Abra o arquivo "**main.js**" e altere a linha ``inStock: false`` para ``inventory: 100``. O arquivo ficará assim:
+Observe a figura abaixo. Ela ilustra o que acabamos de fazer no Passo 4.1 acima. Ao definir um atributo ``key``, provê a cada elemento DOM uma chave (``key``) única.
 
-
-```javascript
-const app = Vue.createApp({
-    data() {
-        return {
-            ...
-            inventory: 100
-    }
-```
-
-5.2 Como nossa condição (``inventory``) agora é um número inteiro, podemos usar uma lógica um pouco mais complexa em nossa expressão. Para isto, abra o arquivo "**index.html**", e altere o conteúdo do elemento ``<p>`` para o código abaixo:
-
-```html
-<p v-if="inventory > 10">Em Estoque</p>
-<p v-else>Fora de Estoque<p>
-```
-
->Agora, só renderizaremos a primeira tag ``<p>`` se o inventário for maior que 10.
->Se abrirmos o arquivo "**index.html**" no browser teremos a figura abaixo.
->![v-if result true](img_readme/v-if_directive_result_v.png)
-
-
-5.3 Digamos que agora queremos exibir uma nova mensagem quando o produto estiver quase esgotado. Nesta situação, poderíamos adicionar outro nível condicional, onde estamos atentos para que a propriedade ``inventory`` fique abaixo de 10 mas acima de 0 (altere o valor da propriedade ``inventory`` em "**main.js**" para **8**). Agora abra o arquivo "**index.html**" altere as linhas dos elementos ``<p>`` em questão, para:
-
-```html
-<p v-if="inventory > 10">Em Estoque</p>
-<p v-else-if="inventory <= 10 && inventory > 0">Quase esgotado!</p>
-<p v-else>Fora de Estoque</p>
-```
-5.4 Ao abrir o arquivo "index.html" no browser, irá aparecer a figura abaixo.
-
-![v-if result true](img_readme/v-if_directive_inventory_8.png)
-
->A diretiva ``v-else-if`` nos dá uma camada intermediária de lógica. Como podemos observer, quando o valor da propriedade ``inventory`` foi alterado para 8, o elemento em questão foi renderizado. 
->
->Claro que, se o valor de ``inventory``for zero, vamos padronizar para o nível final de ``v-else`` e exibir “**Fora de estoque**”. Veja a figura abaixo.
-
-![Exemplo v-bind](img_readme/v-if_directive_inventory_0.png)
+![v-if result true](img_readme/v-for_setting_key_attribute.png)
 
 
 ### **Passo 6. Coding Challenge**
 
-6.1 Adicione uma propridade booleana ``onSale`` ao objeto de dados.
+6.1 Adicione uma _array_ de tamanhos (``sizes``) (**S**, **M**, **L**, **XL**) ao objeto de dados.
 
 
-6.2 Use ``onSale`` para renderizar condicionalmente um elemento ``<p>`` que diz "**À Venda**", sempre que ``onSale`` for verdadeiro.
+6.2 Use ``v-for`` para mostrar os ``sizes`` em uma lista.
 
 
 6.3 Abra o arquivo "**index.html**" no browser. Você verá algo assim.
 
-![Code Challenge t3](img_readme/code_challenge_t4.png)
+![Code Challenge t5](img_readme/code_challenge_t5.png)
 
 
