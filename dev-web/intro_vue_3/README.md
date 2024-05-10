@@ -14,15 +14,15 @@ Instale, também uma extensão do VSCode chamada [es6-string.html](https://marke
 
 No final de cada tutorial, haverá um "Coding Challenge" para colocar os conceitos em prática.
 
-## **3. Vinculação (Ligação) de Atributos (Attribute Binding)**
+## **4. Renderização Condicional**
 
 ### **Passo 1. Configurando o ambiente de desenvolvimento**
 
 1.1 Crie uma pasta chamada "intro-to-vue-3"
 
->Ignore o passo acima caso já tenha feito o tutorial anterior (Criando um Vue _app_ ).
+>Ignore o passo acima caso já tenha feito o **Tutorial 2** (Criando um Vue _app_ ).
 
-1.2 Caso queira, para iniciar, faça o download do código inicial no "branch" do [repositório.](https://github.com/csp1po/intro_vue_3/tree/t3-start). Depois extraia este arquivo e copie o seu conteúdo para dentro da pasta criada no passo 1.1.
+1.2 Caso queira, para iniciar, faça o download do código inicial no "branch" do [repositório.](https://github.com/csp1po/intro_vue_3/tree/t4-start). Depois extraia este arquivo e copie o seu conteúdo para dentro da pasta criada no passo 1.1.
 
 1.3 No painel esquerdo do VS Code, você verá uma estrutura de diretório que se parece com a figura abaixo.
 
@@ -44,11 +44,10 @@ Dentro do arquivo "**index.html**", o seu conteúdo será:
   <body>
     <div id="app">
       <div class="nav-bar"></div>
-      
       <div class="product-display">
         <div class="product-container">
           <div class="product-image">
-            <!-- image goes here -->
+            <img v-bind:src="image">
           </div>
           <div class="product-info">
             <h1>{{ product }}</h1>
@@ -66,7 +65,6 @@ Dentro do arquivo "**index.html**", o seu conteúdo será:
     </script>
   </body>
 </html>
-
 ```
 
 > Observe que neste tutorial estaremos importando a biblioteca do Vue.JS via um link CDN (_content delivery network_). Este tipo de importação se usa somente para fins de prototipagem e aprendizado. Futuramente usaremos a instalação via uma interface de linha de comando (Vue CLI).
@@ -77,120 +75,150 @@ Dentro do arquivo "**index.html**", o seu conteúdo será:
 const app = Vue.createApp({
     data() {
         return {
-            product: 'Socks'
+            product: 'Socks',
+            image: './assets/images/socks_blue.jpg'
         }
     }
 })
 ```
 
-### index.html
+>No final deste tutorial, queremos exibir diferentes elementos HTML com base em uma condição. Exibiremos um elemento ``<p>`` que diz "**em estoque**" quando nosso produto está em estoque ou outro elemento ``<p>`` que diz "**fora de estoque**" quando não está.
 
-No código HTML acima, temos uma nova ``<div>``com uma classe chamada ``product-image``:
+### **Passo 2. Renderizar ou Não Renderizar**
+
+2.1 Abra o arquivo "**index.html**" e procure o pelo trecho de código abaixo:
 
 ```html
-<div class="product-image">
-  <!-- image goes here -->
+<div class="product-info">
+    <h1>{{ product }}</h1>
 </div>
 ```
 
->No final deste tutorial, teremos um elemento ``<img>`` aqui que é vinculado de forma reativa a uma nova propriedade chamada ``image`` em nossos dados. Sempre que o valor dessa imagem mudar, ela será atualizada no DOM.
+2.2 Agora vamos adicionar dois elementos ``<p>``. Para isto, abra o arquivo "**index.html**", e substitua o trecho de código do passo 2.1 pelo que está abaixo:
 
+```html
+<div class="product-info">
+   <h1>{{ product }}</h1>
+   <p>Em Estoque</p>
+   <p>Fora de Estoque</p>
+</div>
+```
+>Queremos que apenas um deles apareça dependendo se nosso produto está em estoque ou não. Então vamos para o objeto de dados do nosso _app_ Vue e adicionamos um valor booleano ``inStock``.
 
-### **Passo 2. Adicionando uma imagem em nossos dados**
-
->Você lembra que no diretório ``assets`` temos uma pasta chamada ``images``, com imagens para meias verdes e azuis? Vamos direcionar uma dessas imagens para uma nova propriedade de dados em nosso aplicativo Vue. Faremos isso definindo ``image`` igual a um caminho para que ele possa capturar essa imagem.
-
-2.1 Abra o arquivo "**main.js**" e substitua o seu conteúdo por este:
+2.3 Abra o arquivo "**main.js**" e troque o seu conteúdo por este:
 
 ```javascript
 const app = Vue.createApp({
     data() {
         return {
             product: 'Socks',
-            image: './assets/images/socks_green.jpg'
+            image: './assets/images/socks_blue.jpg',
+            inStock: true   //new data property
         }
     }
 })
 ```
 
-2.2 Agora estamos prontos para adicionar um elemento ``<img>``no nosso template. Para isto, abra o arquivo "**index.html**". Procure o trecho de código abaixo:
+>Agora que adicionamos os elementos que queremos renderizar condicionalmente e a condição (``inStock``) que usaremos para decidir qual renderizar, estamos prontos para aprender sobre outra diretiva Vue.
+
+
+### **Passo 3. A Diretira v-if**
+
+3.1 Podemos adicionar a diretiva ``v-if`` em um elemento para renderizá-lo com base em uma condição, da seguinte maneira. No arquivo "**index.html**", na linha onde temos ``<p>Em Estoque</p>``, troque-a por ``<p v-if="inStock">Em Estoque</p>``.
+
+>Agora, este elemento será renderizado somente se ``inStock`` for verdadeiro. Podemos combinar a diretiva ``v-if`` com sua diretiva irmã ``v-else`` para exibir outro elemento como substituto se a primeira condição for falsa. 
+
+3.2 No arquivo "**index.html**", na linha onde temos ``<p>Fora de Estoque</p>``, troque-a por ``<p v-else>Fora de Estoque</p>``.
+
+>Veja a figura abaixo.
+
+>![Exemplo diretiva v-bind](img_readme/v-if_directive_example.png)
+
+Agora, se ``inStock`` possui valor ``false``, iremos ver a mensagem "**Fora de Estoque**" renderizado na página.
+
+###Vamos testar as duas condições
+
+3.3 Agora abra o arquivo "**index.html**" no browser. Você verá a página abaixo.
+
+![v-if result true](img_readme/v-if_directive_result_v.png)
+
+3.4 Abra o arquivo "**main.js**" e altere o valor da propriedade ``inStock`` para ``false``. Após isto, abra o arquivo "**index.html**" no browser. Você verá a figura abaixo.
+
+![v-if result false](img_readme/v-if_directive_result_f.png)
+
+
+### **Passo 4. Mostrar e Ocultar (Show and Hide)**
+
+Vale a pena notar que você nem sempre precisa emparelhar ``v-if`` com ``v-else``. Existem muitos casos de uso em que não há necessidade de um elemento alternativo para renderizar. No entanto, nesses casos, às vezes é uma opção melhor usar a diretiva ``v-show``. 
+
+Poderíamos codificar assim:
+
+``<p v-show="inStock">Em Estoque</p>``
+
+>A diretiva ``v-show`` é usada para alternar a **visibilidade** de um elemento em vez de adicionar e remover totalmente o elemento do DOM, como ``v-if`` faz.
+
+Esta é uma opção de melhor desempenho se você tiver algo que está aparecendo ou desaparecendo na tela com frequência. Podemos verificar isso definindo a propriedade ``inStock`` como ``false`` e exibindo o elemento nas ferramentas do desenvolvedor do navegador. Quando ``v-show`` é usado, podemos ver que o elemento ainda está presente no DOM, mas agora está oculto com um estilo de exibição embutido: nenhum; adicionado a ele. Ver abaixo.
 
 ```html
-<div class="product-image">
-    <!-- image goes here -->
-</div>```
-
-Agora você deve substituir o conteúdo por este:
-
-```html
-<div class="product-image">
-  <img src="image">
-</div>
+<p style="display: none;">Em Estoque</p>
 ```
->No atributo "source", diremos ``image`` somente. Por enquanto, isso não vai fazer nada. Queremos que ``src`` extraia o caminho da imagem de nossos dados, semelhante a como extraímos o valor dos dados do ``product`` na expressão ``<h1>`` do tutorial anterior.
 
+### **Passo 5. Lógica Condicional Encadeada**
 
->Portanto, a questão aqui é: como vinculamos (i.e. bind) o atributo ``src`` aos dados de ``image``? É o que faremos no próximo passo.
+No **Passo 3**, vimos ``v-if`` com ``v-else``. Agora vamos dar uma olhada em como podemos adicionar camadas adicionais de lógica condicional.
 
+5.1 Abra o arquivo "**main.js**" e altere a linha ``inStock: false`` para ``inventory: 100``. O arquivo ficará assim:
 
-### **Passo 3. Apresentando a Vinculação de Atributo (Attribute Binding)**
-
-3.1 Para criar um vínculo entre um atributo de um elemento HTML e um valor dos dados do _app_ Vue, usaremos uma diretiva do Vue.JS chamada ``v-bind``. Para isto, abra o arquivo "**index.html**", e altere o conteúdo do elemento ``<img>`` do passo 2.2 como indicado abaixo:
-
-### index.html
 
 ```javascript
-<img v-bind:src="image">
-```
->Agora, criamos um _vínculo reativo_ entre o atributo ``src="image"``e os próprios dados da imagem. Ver figura abaixo.
-
-![Exemplo diretiva v-bind](img_readme/v-bind_directive_example.png)
-
-3.2 Aogra abra o arquivo "**index.html**" no browser. Você verá a página abaixo.
-
-![Página Meias Verdes](img_readme/socks_green.jpg)
-
-
-### **Passo 4. Compreendendo o v-bind**
-
-4.1 Como exatamente a diretiva ``v-bind`` está funcionando? Nós a usamos para vincular dinamicamente um atributo a uma expressão. Nesse caso, o atributo é ``src`` e a expressão é o que estiver entre as aspas desse atributo: ``"image"``. Para mostrar melhor, observe abaixo:
-
-### index.html
-
-```javascript
-<img v-bind:src="image"> <! -- src attribute bound to the image data -->
+const app = Vue.createApp({
+    data() {
+        return {
+            ...
+            inventory: 100
+    }
 ```
 
->Se você está pensando que isso não se parece com uma típica expressão JavaScript, você pode imaginá-la assim: ``v-bind:src="{{ image }}"``. Implicitamente, o Vue vai avaliá-lo da mesma forma. Veja a figura abaixo.
-
-![Exemplo v-bind](img_readme/v-bind_example.jpg)
-
-
-4.2 Por causa do sistema de reatividade do Vue, se atualizarmos nossos dados da imagem para um caminho que aponte para a imagem das meias azuis (``image: './assets/images/socks_blue.jpg'``), a expressão à qual nosso atributo ``src`` está vinculado seria atualizado e nosso navegador exibiria a imagem das meias azuis. A figura abaixo mostra como esta vinculação é reativa e dinâmica.
-
-![Reatividade Dinâmica v-bind](img_readme/reatividade_dinamica_v-bind_blue.png)
-
-
-4.3 O uso da diretiva ``v-bind`` é tão comum que existe uma abreviação (_shorthand_) para isso, que é usar apenas os dois pontos:
+5.2 Como nossa condição (``inventory``) agora é um número inteiro, podemos usar uma lógica um pouco mais complexa em nossa expressão. Para isto, abra o arquivo "**index.html**", e altere o conteúdo do elemento ``<p>`` para o código abaixo:
 
 ```html
-<img :src="image"> 
+<p v-if="inventory > 10">Em Estoque</p>
+<p v-else>Fora de Estoque<p>
 ```
 
->Assim como existem tantos atributos HTML diferentes, existem muitos casos de uso para o ``v-bind``. Por exemplo, você pode vincular uma descrição a um atributo ``alt``, vincular uma URL a um ``href``, vincular alguns estilos dinâmicos a uma classe (``class``) ou atributo de estilo (``style``), desativar e ativar um botão e assim por diante. Ver figura abaixo.
+>Agora, só renderizaremos a primeira tag ``<p>`` se o inventário for maior que 10.
+>Se abrirmos o arquivo "**index.html**" no browser teremos a figura abaixo.
+>![v-if result true](img_readme/v-if_directive_result_v.png)
 
-![Casos de Uso v-bind](img_readme/v-bind_use_cases.png)
+
+5.3 Digamos que agora queremos exibir uma nova mensagem quando o produto estiver quase esgotado. Nesta situação, poderíamos adicionar outro nível condicional, onde estamos atentos para que a propriedade ``inventory`` fique abaixo de 10 mas acima de 0 (altere o valor da propriedade ``inventory`` em "**main.js**" para **8**). Agora abra o arquivo "**index.html**" altere as linhas dos elementos ``<p>`` em questão, para:
+
+```html
+<p v-if="inventory > 10">Em Estoque</p>
+<p v-else-if="inventory <= 10 && inventory > 0">Quase esgotado!</p>
+<p v-else>Fora de Estoque</p>
+```
+5.4 Ao abrir o arquivo "index.html" no browser, irá aparecer a figura abaixo.
+
+![v-if result true](img_readme/v-if_directive_inventory_8.png)
+
+>A diretiva ``v-else-if`` nos dá uma camada intermediária de lógica. Como podemos observer, quando o valor da propriedade ``inventory`` foi alterado para 8, o elemento em questão foi renderizado. 
+>
+>Claro que, se o valor de ``inventory``for zero, vamos padronizar para o nível final de ``v-else`` e exibir “**Fora de estoque**”. Veja a figura abaixo.
+
+![Exemplo v-bind](img_readme/v-if_directive_inventory_0.png)
 
 
-### **Passo 5. Coding Challenge**
+### **Passo 6. Coding Challenge**
 
-5.1 Adicione um ``url`` ao objeto de dados
+6.1 Adicione uma propridade booleana ``onSale`` ao objeto de dados.
 
-5.2 Use ``v-bind``para vincular este URL para um atributo ``href``do elemento ``<a>``.
 
-5.3 Abra o arquivo "**index.html**" no browser. Você verá algo assim.
+6.2 Use ``onSale`` para renderizar condicionalmente um elemento ``<p>`` que diz "**À Venda**", sempre que ``onSale`` for verdadeiro.
 
-![Code Challenge t3](img_readme/code_challenge_t3.png)
 
+6.3 Abra o arquivo "**index.html**" no browser. Você verá algo assim.
+
+![Code Challenge t3](img_readme/code_challenge_t4.png)
 
 

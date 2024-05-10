@@ -20,9 +20,14 @@
           <div class="product-info">
             <h1>{{ product }}</h1>
             <p>{{ description }}</p>
+            <p v-if="inventory > 10">Em estoque</p>
+            <p v-else-if="inventory <= 10 && inventory > 0">Quase esgotado!</p>
+            <p v-else>Fora de estoque</p>
             <a :href="url">This is a URL.</a>
+            <p v-if="onSale">À venda</p>
           </div>
         </div>
+        <p></p>
       </div>
     </div>
 
