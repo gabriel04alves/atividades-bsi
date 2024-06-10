@@ -11,513 +11,323 @@ Vai-se utilizar o VSCode. Caso você ainda não o tenha [baixe-o](https://code.v
 Instale, também uma extensão do VSCode chamada [es6-string.html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html)
 
 
-## **Tutorial 3. Single File Components (Componentes de Arquivo Único)**
+## **Tutorial 4. Vue Router Essentials (Fundamentos do Vue Router)**
 
-No tutorial anterior criamos nosso projeto com o comando ``create-vue``, e agora estamos prontos para começar a customizá-lo para construir nosso próprio aplicativo.
+Neste tutorial, veremos as ferramentas que o Vue usa para navegar entre as páginas (ou visualizações) em nosso aplicativo. Serão abordados:
 
-### **Passo 1. O Que São Esses Arquivos ``.vue``?**
+* O que é roteamento do lado do cliente?
+* O que é um aplicativo de página única (_Single Page Application - SPA_)?
+* Como o **Vue Router** é configurado em um aplicativo Vue?
+* E por fim, personalizaremos os roteadores em nosso aplicativo de exemplo
 
-Para começar a construir nosso _app_, precisamos obter uma compreensão básica de como as coisas estão funcionando no aplicativo de demonstração que a CLI criou para nós no tutorial anterior. Vamos analisar o diretório ``src/views``, que possui dois arquivos com a extensão ``.vue``: **HomeView.vue** e **AboutView.vue**. Na verdade, eles são os componentes que o "**Vue Router**" (Roteador Vue) carrega quando navegamos para as rotas ``Home`` e ``About``, respectivamente. A figura abaixo ilustra o que acabamos de dizer.
 
-![links_home_about](img_readme/links_home_about.jpg)
+### **Passo 1. Server-Side vs Client-Side Routing (Roteamento do lado do servidor vs do lado do cliente)**
 
-No próximo tutorial, vamos explorar os fundamentos do **Vue Router**, mas por enquanto você só precisa entender que esses componentes de “_visualização_” são diferentes e que podem ser vistos (ou navegados) em nosso aplicativo. Eles podem conter componentes filhos que estão aninhados dentro deles, e seus filhos também serão exibidos. Por exemplo, o componente ``HomeView.vue`` tem um filho: ``TheWelcome.vue``, que tem vários códigos de _template_ que estão sendo exibidos quando estamos na rota ``Home``. O trecho de código do arquivo ``HomeView.vue`` abaixo mostra como o componente pai "chama" o componente filho.
+Quando se trata de websites, normalmente conectamos nossa página com links. Um link é clicado, chama de volta o servidor para a próxima página e essa página é carregada. Ver figura abaixo.
+
+![server_side_routing](img_readme/server_side_routing.jpg)
+
+Chamamos isso de “_roteamento do lado do servidor_” porque o cliente está fazendo uma solicitação ao servidor a cada alteração de um URL.
+
+![sever_side_routing_2](img_readme/sever_side_routing_2.jpg)
+
+> Quando se trata do Vue, muitos escolhem o roteamento do lado do cliente, o que significa que ele ocorre no próprio navegador (browser) usando JavaScript.
+
+![client_side_routing](img_readme/client_side_routing.jpg)
+
+> Em muitos casos, a visualização do nosso aplicativo que precisamos mostrar já foi carregada no navegador, portanto, não precisamos entrar em contato com o servidor para obtê-la. O **Vue Router** simplesmente atualiza a parte do aplicativo que está sendo exibida no momento.
+
+> Na verdade, com um tipo de roteamento como esse, nosso aplicativo funciona como um aplicativo de página única (i.e. SPA). Ver figura abaix. Mas, o que exatamente isso significa? É o que veremos no próximo passo.
+
+![spa_index_html](img_readme/spa_index_html.gif)
+
+
+### **Passo 2. Aplicativo de Página Única (Single Page Application)**
+
+Um SPA é um _web app_ que carrega de uma única página e a atualiza dinamicamente conforme o usuário interage com o aplicativo. No nosso caso, tudo está sendo carregado do arquivo "**index.html**" do nosso projeto. No **Tutorial 2**, examinamos esse arquivo e vimos que ele continha uma ``<div>`` com o ``id`` denominado ``#app``. Veja abaixo.
+
+
+```
+<div id="app"></div>
+```
+
+Também demos uma olhada no arquivo "**main.js**" e descobrimos que, quando nosso aplicativo é criado, ele é montado nessa ``<div>`` com o ``id #app``. Veja abaixo.
+
+```
+const app = createApp(App)
+
+app.use(createPinia())
+app.use(router)
+
+app.mount('#app')
+```
+
+Em outras palavras, o arquivo "**index.html**" é a “_página única_” do nosso SPA, onde todo o código do aplicativo é montado. O **Vue Router** permite o roteamento do lado do cliente para que possamos navegar e exibir diferentes “visões” (i.e. ``views``) do nosso _app_.
+
+
+### **Passo 3. O Arquivo "package.json"**
+
+Todas as dependências do nosso aplicativo são rastreadas dentro do nosso arquivo ``package.json``. Se dermos uma olhada rápida dentro dele, veremos que o Vue CLI já inseriu o **Vue Router** como uma dependência porque optamos por adicioná-lo quando configuramos nosso projeto. Veja parte do conteúdo deste arquivo.
+
+```
+...
+"dependencies": {
+  "axios": "^1.2.1",
+  "pinia": "^2.0.21",
+  "vue": "^3.2.38",
+  "vue-router": "^4.1.5"
+},
+...
+```
+
+> O conteúdo acima está dizendo ao nosso aplicativo para usar uma versão do ``vue-router`` compatível com a versão **4.0.0-0**. (Talvez o número da sua versão pode ser diferente dependendo de quando você fizer este tutorial).
+
+Anteriormente no **Tutorial 2**, executamos o comando ``npm install``, que instalou a biblioteca ``vue-router`` dentro do diretório ``node_modules`` de nosso aplicativo.
+
+Agora vamos dar uma olhada dentro do diretório ``router`` para ver como o **Vue Router** está funcionando.
+
+
+### **Passo 4. Como o *Vue Router* É Configurado**
+
+4.1 Abra o arquivo "**src/router/index.js**" e observe as duas primeiras linhas de código.
 
 ```javascript
-<script setup>
-   import TheWelcome from '../components/TheWelcome.vue'
-</script>
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
 ```
 
-Cada um desses arquivos ``.vue`` são componentes de arquivo único, e é isso que estamos explorando: do que são compostos e como você os usa para criar um aplicativo Vue?
+> Na primeira linha estamos importando a biblioteca "**vue-router**".
+> 
+> Na segunda, importamos um componente que usaremos em nossas rotas
 
-### **Passo 2. Anatomia de Um Componente de Arquivo Único (Single File Component)**
-
-Quando falamos de aplicativos Vue, na verdade estamos falando de uma coleção de componentes Vue. A figura abaixo mostra esta coleção.
-
-![anatomia_componente](img_readme/anatomia_componente.gif)
-
-Surge uma pergunta: como funcionam esses componentes de arquivo único? Observe a figura abaixo.
-
-![anatomia_componente_2](img_readme/anatomia_componente_2.jpg)
-
-Um componente ``.vue`` típico possui três seções: ``<script>``, ``<template>`` e ``<style>``.
-
-Usando a analogia de um corpo humano, você pode pensar no ``<template>`` como o esqueleto de seu componente, uma vez que ele dá a estrutura. A seção de ``<script>`` é o cérebro, fornecendo a inteligência e o comportamento. E a seção ``<style>`` é exatamente o que parece: roupas, maquiagem, penteado, enfim, a perfumaria.
-
-Tradicionalmente, essas seções são escritas em HTML, JavaScript e CSS. No entanto, com a configuração adequada, você também pode usar alternativas como Pug, TypeScript e SCSS.
-
-Agora que pudemos entender os componentes de arquivo único, podemos começar a criar os nossos. Mas primeiro, o que vamos construir, exatamente? O próximo passo descreverá isto.
-
-
-### **Passo 3. O _app_ Que Vamos Construir**
-
-No final deste curso, teremos feito um _app_ que mostra eventos. Veja a figura abaixo.
-
-![display_events_app](img_readme/display_events_app.jpg)
-
-Os eventos serão extraídos de uma chamada a uma API externa e serão exibidos na página inicial. Poderemos clicar no evento para ver os seus detalhes, como mostra a figura abaixo.
-
-![display_events_app_2](img_readme/display_events_app_2.jpg)
-
-3.1 Abra o Terminal no VS Code. Primeiro digite (CTRL+Shift+P) e use a opção “Ver: Toggle Terminal” ou “Ver: Alternar Terminal”.
-
-3.2 Caso ainda não esteja no diretório, digite na linha de comando do Terminal: 
-
-```
-cd vue_3_mundo_real
-```
-
-3.3 Renomeie o arquivo "**src/components/HelloWorld.vue**" para "**src/components/EventCard.vue**".
-
-3.4 Agora abra o arquivo "**src/components/EventCard.vue**" e altere o seu conteúdo para o trecho de código abaixo.
-
-```html
-<script setup>
-// defineProps({
-//   msg: {
-//     type: String,
-//     required: true,
-//   },
-// })
-</script>
-
-<template>
-  <div class="greetings"></div>
-</template>
-
-<style scoped></style>
-```
-
-3.5 Abra o arquivo "**src/App.vue**" e altere o seu conteúdo para o trecho de código abaixo.
-
-```
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-// import HelloWorld from './components/HelloWorld.vue'
-</script>
-
-<template>
-  <div id="layout">
-    <header>
-      <div class="wrapper">
-        <nav>
-          <RouterLink to="/">Home</RouterLink> |
-          <RouterLink to="/about">About</RouterLink>
-        </nav>
-      </div>
-    </header>
-    <RouterView />
-  </div>
-</template>
-
-<style>
-#layout {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-nav {
-  padding: 30px;
-}
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
-```
-
-3.6 Abra o arquivo "**src/main.js**" e altere o conteúdo abaixo
+Observe também, neste mesmo arquivo o código abaixo.
 
 ```javascript
-import './assets/main.css'
+routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: HomeView
+    },
+    {
+      path: '/about',
+      name: 'about',
+      // pulamos esta parte, que será vista posteriormente
+ 	   ...
+    }
+  ]
 ```
 
-Para este conteúdo (apenas aplique um comentário na linha):
+``path`` indica a rota atual, em termos de URL, para onde o usuário será levado. Nela, existe apenas a ``/`` (barra), ou seja, esta é a raiz, a página inicial (``homepage``) do nosso aplicativo e o que as pessoas veem quando acessam nosso domínio em ``example.com``, por exemplo.
+
+``name`` nos permite dar um nome a essa rota para que possamos usá-la em todo nosso _app_ para nos referirmos a ela (veremos sobre isso mais adiante).
+
+``component`` nos permite especificar qual componente renderizar naquela rota. Observe que o ``HomeView`` foi importado na segunda linha do arquivo. Assim, este componente (``HomeView``) será renderizado sempre que o URL do navegador terminar com uma ``/`` (barra) sem nada depois dela.
+
+Observando o segundo objeto de rota, podemos ver que ele tem um caminho diferente.
 
 ```javascript
-// import './assets/main.css'
+{
+      path: '/about',
+      name: 'about',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/AboutView.vue')
+    }
 ```
 
-O que fizemos foi "remover" o arquivo CSS porque nós implementamos o estilo no passo 3.5.
+Quando o URL do navegador terminar com ``/about``, o componente ``About` será renderizado.
 
-3.7 Remova a pasta "**src/components/icons**"
+Você provavelmente notou que também está importando o componente de maneira diferente. Em vez de importá-lo na parte superior do arquivo (duas primeiras linhas), como fizemos com ``HomeView``, estamos importando-o apenas quando a rota é realmente chamada. Como diz nos comentários, isso irá gerar um arquivo "**About.js**" separado, que só será carregado no navegador de alguém quando este alguém navegar para ``/about``. Esta é uma otimização de desempenho que não é necessária em nosso aplicativo pequeno e simples. Mas, à medida que um aplicativo cresce, pode ser útil dividir como ele é carregado em diferentes arquivos JavaScript, que só são carregados quando são necessários.
 
-3.8 Remova os arquivos "**src/components/TheWelcome.vue**" e "**src/components/WelcomeItem.vue**".
-
-3.9 Abra o arquivo "**src/views/HomeView.vue**" e altere o seu conteúdo para:
+Usamos o método ``createRouter()`` para criar o roteador, informando-o para usar a API de histórico do browser e enviando as rotas, antes de finalmente exportá-lo desse arquivo.
 
 ```javascript
-<script setup></script>
-
-<template>
-  <div class="home"></div>
-</template>
-```
-
-3.10 Digite na linha de comando:
-
-```
-npm run dev
-```
-
-Após a execução do comando acima, ele disponibiliza ao vivo um host local (``http://localhost:5173``), você verá a seguinte página no browser:
-
-![vue_initial_app_updated](img_readme/vue_initial_app_updated.jpg)
-
-
-### **Passo 4. Trabalhando no ``EventCard``**
-
-4.1 Abra o arquivo "**src/components/EventCard.vue**" e altere o conteúdo abaixo:
-
-```
-<template>
-  <div class="greetings"></div>
-</template>
-```
-
-Para:
-
-```
-<template>
-  <div class="event-card"></div>
-</template>
-```
-
-4.2 Agora vamos adicionar alguns estilos para classe ``event-card``. Substitua o trecho de código abaixo
-
-```
-<style scoped></style>
-```
-
-Para:
-
-```
-<style scoped>
-.event-card {
-  padding: 20px;
-  width: 250px;
-  cursor: pointer;
-  border: 1px solid #39495c;
-  margin-bottom: 18px;
-}
-.event-card:hover {
-  transform: scale(1.01);
-  box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2);
-}
-</style>
-```
-
-> Você deve estar se perguntando o que esse atributo ``scoped`` significa? A resposta é: ele nos permite definir e isolar estilos apenas para esse componente. Ou seja, eles são específico e não afetarão nenhuma outra parte de nossa aplicação.
-
-4.3 Como queremos exibir informações sobre o evento neste "**EventCard**", precisamos fornecer a ele um evento para exibição. Vamos, então, adicionar isso usando uma referência em nossa seção ``<script>``. Para isto, abra o arquivo "**src/components/EventCard.vue**" e altere o conteúdo da secão ``<script>`` com o trecho de código abaixo.
-
-```javascript
-<script setup>
-import { ref } from 'vue'
-
-// defineProps({
-//   msg: {
-//     type: String,
-//     required: true,
-//   },
-// })
-
-const event = ref({
-  id: 5928101,
-  category: 'animal welfare',
-  title: 'Cat Adoption Day',
-  description: 'Find your new feline friend at this event.',
-  location: 'Meow Town',
-  date: 'January 28, 2022',
-  time: '12:00',
-  petsAllowed: true,
-  organizer: 'Kat Laydee',
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    ...
+  ]
 })
-</script>
+
+export default router
 ```
 
-4.4 Agora, na seção ``<template>`` podemos exibir alguns desses dados de evento usando o código abaixo. No mesmo arquivo do passo anterior (**passo 4.3**), altere a seção ``<template>``:
+> Portanto, definimos as duas visualizações diferentes entre as quais nosso aplicativo poderá navegar, mas na verdade ainda não carregamos esse roteador em nossa instância do Vue. Lembre-se, todo o nosso aplicativo é carregado de nosso arquivo "**main.js**" e, se olharmos dentro desse arquivo, podemos ver que estamos importando nosso arquivo em ``./router/index.js``, que está trazendo o que exportamos de "**router.js**". Veja o trecho de código do arquivo "**main.js**".
+
 
 ```javascript
-<template>
-  <div class="event-card">
-    <h2>{{ event.title }}</h2>
-    <span>@{{ event.time }} on {{ event.date }}</span>
-  </div>
-</template>
+import router from './router'  
 ```
 
-4.5 Para que o evento "**EventCard**" seja exibido, ele precisa ser colocado em algum lugar para o qual ele possa ser roteado, como o arquivo "**HomeView.vue**" em nosso diretório ``views``. Precisamos importar ``EventCard.vue``, e então podemos usá-lo no ``<template>``. Para isto, abra o arquivo "**src/views/HomeView.vue**" e altere o seu conteúdo para:
+> A linha acima indica queremos importar "**index.js**" do diretório ``/router``.
+
+
+Você também notará neste arquivo que dizemos à nossa instância Vue para usar o roteador que importamos. Veja a linha abaixo.
 
 ```javascript
-<script setup>
-import EventCard from '@/components/EventCard.vue'
-</script>
+app.use(router)
+```
 
-<template>
-  <div class="home">
-    <EventCard />
+**Até agora tudo bem. Nosso roteador está configurado. Mas onde é adicionada a funcionalidade para permitir que o usuário navegue para diferentes partes do aplicativo? É o que veremos no próximo passo.**  
+
+
+### **Passo 4. Componentes embutidos do Vue Router**
+
+Procurando dentro do arquivo "**App.vue**", encontraremos um elemento ``<nav>``. Dentro dele existem alguns links de roteadores (``RouterLink``), que são componentes globais específicos do "**Vue Router**" aos quais temos acesso.
+
+
+4.1 Abra o arquivo "**src/App.vue**" e observe o conteúdo abaixo:
+
+```
+<header>
+  <div class="wrapper">
+    <nav>
+      <RouterLink to="/">Home</RouterLink> |
+      <RouterLink to="/about">About</RouterLink>
+    </nav>
   </div>
-</template>
+</header>
 ```
 
-4.6 Agora, devemos ver nosso "**EventCard**" aparecendo no browser quando estamos na página inicial (``Home``). Ver figura abaixo.
 
-![event_card_showing_up](img_readme/event_card_showing_up.jpg)
-
-
-### **Passo 5. Fazendo Um Refatoramento No Código**
-
-Estamos fazendo um grande progresso, mas lembre-se de que queremos que o ``EventCard`` seja exibido no meio da página inicial ("**Home Page**"). E, como eventualmente teremos uma coleção de eventos que extraímos de uma chamada à uma API, precisamos refatorar um pouco para tornar esse caso de uso mais pronto para produção.
-
-As etapas de refatoração incluem:
-
-* Mover os dados dos eventos para o evento pai (i.e. "**HomeView.vue**")
-* O evento pai cria o componente ``EventCard`` para cada evento em seus dados
-* O evento pai alimenta cada ``EventCard`` com seu próprio evento para exibir
-* O evento pai exibe os ``EventCards`` em um contêiner Flexbox.
-
-
-5.1 Nosso primeiro passo será excluir os dados do evento em ``EventCard``. Em seguida, adicionaremos uma ``prop``para este evento, para que o componente pai possa alimentar o componente filho com um objeto de evento para exibição. Para isto, abra o arquivo "**src/components/EventCard.vue**" e substitua o seu conteúdo pelo abaixo.
+4.2 E um pouco mais abaixo deles está este outro componente do "**Vue Router**":
 
 ```
-<script setup>
-import { ref } from 'vue'
-
-defineProps({
-  event: {
-    type: Object,
-    required: true,
-  },
-})
-</script>
-
-<template>
-  <div class="event-card">
-    <h2>{{ event.title }}</h2>
-    <span>@{{ event.time }} on {{ event.date }}</span>
-  </div>
-</template>
-
-<style scoped>
-.event-card {
-  padding: 20px;
-  width: 250px;
-  cursor: pointer;
-  border: 1px solid #39495c;
-  margin-bottom: 18px;
-}
-.event-card:hover {
-  transform: scale(1.01);
-  box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2);
-}
-</style>
+<RouterView />
 ```
-5.2 Agora que o ``EventCard`` está configurado para receber um evento, podemos adicionar os dados dele no seu componente pai, que é ``HomeView.vue``. Abra o arquivo "**src/views/HomeView.vue"**, e substitua conteúdo dele pelo que está abaixo:
+
+**Surge a pergunta: o que está acontecendo aqui?**
+
+``<RouterLink>`` é um componente (da biblioteca ``vue-router``) cujo trabalho é vincular a uma rota específica. Você pode pensar nele como uma "etiqueta de âncora embelezada" (_anchor tag_).
+
+``<RouterView/>`` é essencialmente um espaço reservado (i.e. _placeholder_) onde o conteúdo do nosso componente ``view` será renderizado na página.
+
+Quando um usuário clica no link ``Home``, para onde ele será direcionado? Essa resposta está dentro do atributo ``to``: ``<RouterLink to="/">``.
+
+Ou seja, ele será levados para ``/``, o que significa que de acordo com a rota configurada em "**router.js**", o componente ``Home`` será carregado.
+
+
+ 4.3 Agora abra o arquivo "src/router/index.js" e observe o trecho de código.
+
+```javascript
+{
+  path: '/',
+  name: 'home',
+  component: HomeView
+},
+```
+
+Mas onde, exatamente, ele será carregado? A resposta é: no ``<RouterView/>``.
+
+Novamente, isso é apenas um _placeholder_ que é substituído pelo componente ``view`` para o qual roteamos, como ``HomeView`` ou ``AboutView``. A figura abaixo ilustra este processo.
+
+![placeholder_component](img_readme/placeholder_component.jpg)
+
+
+### **Passo 5. Customizando (Personalizando) nosso aplicativo de exemplo**
+
+Agora que entendemos os fundamentos do "**Vue Router**", estamos prontos para começar a personalizar as rotas em nosso aplicativo de exemplo. Nossa lista de tarefas inclui:
+
+1. Renomear ``HomeView.vue`` para ``EventListView.vue``
+2. Personalizar a rota para ``EventListView``
+3. Atualizar ``AboutView.vue``
+4. Reconfigurar a rota ``About``
+
+
+
+
+5.1 Renomeie o arquivo "**src/views/HomeView.vue**" para "**src/views/EventListView.vue**".
+
+5.2 Agora que o arquivo foi renomeado, precisaremos alterar nossa declaração de importação (comando ``import``) em nosso arquivo  roteador e corrigir o próprio objeto de rota (i.e. o nome do componente). Abra o arquivo "**src/route/index.js**" e altere a segunda e a décima linha de código conforme o trecho abaixo.
 
 ```
-<script setup>
-import EventCard from '@/components/EventCard.vue'
-import { ref } from 'vue'
-
-const events = ref([
+import { createRouter, createWebHistory } from 'vue-router'
+import EventListView from '../views/EventListView.vue' 
+const routes = [
   {
-    id: 5928101,
-    category: 'animal welfare',
-    title: 'Cat Adoption Day',
-    description: 'Find your new feline friend at this event.',
-    location: 'Meow Town',
-    date: 'January 28, 2022',
-    time: '12:00',
-    petsAllowed: true,
-    organizer: 'Kat Laydee',
+    path: '/',
+    name: 'event-list',
+    component: EventListView
   },
-  {
-    id: 4582797,
-    category: 'food',
-    title: 'Community Gardening',
-    description: 'Join us as we tend to the community edible plants.',
-    location: 'Flora City',
-    date: 'March 14, 2022',
-    time: '10:00',
-    petsAllowed: true,
-    organizer: 'Fern Pollin',
-  },
-  {
-    id: 8419988,
-    category: 'sustainability',
-    title: 'Beach Cleanup',
-    description: 'Help pick up trash along the shore.',
-    location: 'Playa Del Carmen',
-    date: 'July 22, 2022',
-    time: '11:00',
-    petsAllowed: false,
-    organizer: 'Carey Wales',
-  },
-])
-</script>
-
-<template>
-  <div class="home">
-    <EventCard />
-  </div>
-</template>
+  ...
+]
 ```
 
-5.3 Agora que ``HomeView.vue`` tem os dados dos eventos, podemos usá-los para criar um novo ``EventCard`` para cada um dos objetos de evento que estão nesses dados, usando a diretiva ``v-for``. Para isto, abra o arquivo "src/views/HomeView.vue" e altere o conteúdo que trata da seção ``<template>``para o código abaixo.
-
-```
-<template>
-  <div class="home">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
-  </div>
-</template>
-```
-
-> Observe como estamos vinculando o ``id`` do evento ao atributo ``:key``. Isso dá ao "**Vue.JS**" uma maneira de identificar e acompanhar cada ``EventCard`` exclusivo.
-
-5.4 Repita o procedimento efetuado no **Passo 3.10** para visualizarmos no browser o que acabamos de fazer no passo anterior. Ou seja, criamos um ``EventCard``para cada um dos eventos que são dados do arquivo "**HomeView.vue**". Você verá algo como a figura abaixo.
-
-![all_events_homeview](img_readme/all_events_homeview.jpg)
-
-5.5 Por fim, só precisamos colocar esses eventos em um contêiner Flexbox para que as coisas fiquem como queremos. Abra o arquivo "**src/views/HomeView.vue**" e altere o nome da classe do elemento ``<div>`` em que nosso ``EventCard`` está aninhado e adicionar alguns estilos Flexbox. Altere o conteúdo das seções ``<template>``e ``<style scoped>`` pelo seguinte trecho abaixo.
-
-```
-...
-
-<template>
-  <div class="events">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
-  </div>
-</template>
-
-<style scoped>
-.events {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-</style>
-```
-
-5.6 Repita o procedimento efetuado no **Passo 3.10** para visualizarmos no browser o que acabamos de fazer no passo anterior. Você verá algo como a figura abaixo.
-
-####INSERIR FIGURA
-
-> Agora nossos ``EventCards`` serão exibidos em uma coluna centralizada.
-
-
-### **Passo 6. E os Estilos Globais?**
-
-6.1 Até agora, discutimos estilos com escopo e como o atributo ``scoped`` nos permite adicionar estilos direcionados ao componente específico com o qual estamos preocupados. Mas e os estilos globais que queremos aplicar a todo o nosso aplicativo? Embora existam diferentes maneiras de fazer isso, a mais simples é abrindo o arquivo "**src/App.vue**". Lembre-se: este é o componente raiz do nosso aplicativo. Agora remova o atributo ``scoped`` da seção ``<style>``. Ela ficará então assim:
-
-```
-<style>
-...
-</style>
-```
-
-6.2 Agora todos os estilos no ``App.vue`` são aplicados a todo o aplicativo. Aqui, poderíamos adicionar uma nova regra (um novo elemento ``<h2>``). Abra novamente o arquivo ``**src/App.vue**" e adicione a regra do CSS.
-
-```
-<style>
-...
-h2 {
-  font-size: 20px;
-}
-</style>
-```
-
-6.3 Agora, qualquer elemento ``<h2>`` em nosso aplicativo terá um tamanho de fonte de 20px. Como o template do nosso ``EventCard`` possui um ``<h2>``, ele receberá esse novo estilo global. Abra o arquivo "src/components/EventCard.vue" e altere o conteúdo da seção ``<template>``para o trecho de código abaixo.
-
-```
-<template>
-  <div class="event-card">
-    <h2>{{ event.title }}</h2>
-    <span>@{{ event.time }} on {{ event.date }}</span>
-  </div>
-</template>
-```
-
-6.4 Falando em itens globais em nosso _app_ Vue, o que aconteceria se adicionássemos algo como um elemento ``<h1>`` à seção ``<template>`` do arquivo ``src/App.vue``? Abra-o e altere a seção com o conteúdo abaixo.
-
-```
-<template>
-  <div id="layout">
-    <header>
-      <div class="wrapper">
-        <nav>
-          <RouterLink to="/">Home</RouterLink> |
-          <RouterLink to="/about">About</RouterLink>
-        </nav>
-      </div>
-    </header>
-    <h1>Events For Good</h1> <!-- new element -->
-    <RouterView />
-  </div>
-</template>
-``` 
-
-6.5 Repita o procedimento efetuado no **Passo 3.10** para visualizarmos no browser o que acabamos de fazer no passo anterior. Você verá algo como a figura abaixo.
-
-![all_events_homeview_2](img_readme/all_events_homeview_2.jpg)
-
-> Estamos vendo algumas coisas. Primeiro, nosso contêiner Flexbox está funcionando e os títulos dos eventos agora são um pouco maiores (**20px**) devido à nova regra global de estilo que adicionamos. 
-
-6.6 Observe o que acontece quando navegamos para a rota ``About``. Ver figura abaixo.
-
-![route_about](img_readme/route_about.jpg)
-
-> Observe que o conteúdo desta página "_This is an about page_" aparece no canto inferior esquerdo. Portanto, precisamos corrigir esse posicionamento um pouco mais adiante.
-
-> Observe também que estamos vendo aquele header ``<h1>`` exibindo “_Events For Good_”. Isso nos diz que podemos colocar o conteúdo no template do nosso ``App.vue`` que queremos que seja exibido globalmente em todas as visualizações do nosso aplicativo. Isso pode ser útil para coisas como barra de pesquisa, cabeçalho ou uma barra de navegação, como já temos aqui.
-
-6.7 Mas, para o nosso caso de uso, não precisamos que o título apareça em todas as visualizações. Vamos então colocá-lo no arquivo "**src/views/HomeView.vue**". Abra-o e altere-o com o código abaixo.
-
-```
-...
-<template>
-  <h1>Events For Good</h1>
-  <div class="events">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
-  </div>
-</template>
-...
-```
-
-> Agora, esse título aparecerá apenas em uma rota ``Home``.
-
-6.8 Por fim, para corrigir este problema de posicionamento da página ``About``, precisamos apenas remover alguns estilos padrão. Abra o arquivo "**src/views/AboutView.vue**" e altere o seu conteúdo pelo que está abaixo.
-
+5.3 Agora vamos adicionar alguma personalização à nossa página ``About`` para ajustar nosso aplicativo de exemplo, adicionando uma descrição de texto. Para isto, abra o arquivo "**src/views/About.vue**" e altere o seu conteúdo conforme o trecho de código abaixo.
 
 ```
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h1>A site for events to better the world.</h1>
   </div>
 </template>
-
-<style>
-/* @media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-} */
 ```
 
-Você verá algo como a figura abaixo.
+5.4 Como não precisamos usar a divisão de código em nível de rota para nosso aplicativo, vamos simplificar o objeto de rota ``About``. Abra o arquivo "**src/router/index.js**" e substitua seu conteúdo de acordo com o trecho de código abaixo.
 
-![route_about_2](img_readme/route_about_2.jpg)
+```javascript
+{
+  path: '/about',
+  name: 'about',
+  component: AboutView
+}
+```
+
+> Não podemos nos esquecer de importar o arquivo "**About.vue**".
+
+5.5 Para nos certificarmos de que todas as alterações no arquivo "**src/router/index.js**" foram efetuadas, o seu conteúdo deve estar como o código abaixo.
+
+```javascript
+import { createRouter, createWebHistory } from 'vue-router'
+import EventListView from '../views/EventListView.vue'
+import AboutView from '../views/AboutView.vue'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'event-list',
+      component: EventListView,
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: AboutView,
+    },
+  ],
+})
+
+export default router
+```
+
+5.6 Como agora estamos exibindo uma lista de eventos no que costumava ser nossa página “**Home page**”, vamos atualizar o HTML interno do ``RouterLink`` para essa visualização. Abra o arquivo "src/App.vue" e atualize seu conteúdo para:
+
+```javascript
+<template>
+  <div id="layout">
+    <header>
+      <div class="wrapper">
+        <nav>
+          <RouterLink to="/">Events</RouterLink> |
+          <RouterLink to="/about">About</RouterLink>
+        </nav>
+      </div>
+    </header>
+    <RouterView />
+  </div>
+</template>
+```
+
+
+5.7 Repita o procedimento efetuado no **Passo 3.10** do **Tutorial 3** para visualizarmos no browser o que acabamos de fazer no passo anterior. Você verá algo como a figura abaixo.
+
+
+![example_app_t4](img_readme/example_app_t4.jpg)
 
 
 ### **Passo 7. Fazendo o Fechamento**
 
-Vimos muita coisa. Aprendemos o que é um componente de arquivo único ``.vue``, como ele é composto (com estilos com atributo ``scoped`` versus estilos globais) e como começar a usar esses componentes para criar um aplicativo Vue.
+Neste tutorial aprendemos os conceitos básicos do **Vue Router**. No próximo tutorial, aprenderemos como buscar nossos eventos como dados externos que extraímos por meio de uma chamada de API usando o Axios.
