@@ -11,185 +11,65 @@ Vai-se utilizar o VSCode. Caso você ainda não o tenha [baixe-o](https://code.v
 Instale, também uma extensão do VSCode chamada [es6-string.html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html)
 
 
-## **Tutorial 5. Chamadas de API Com Axios**
+## **Tutorial 6. Roteamento Dinâmico**
 
-Nosso aplicativo está atualmente, funcionando assim: os eventos que estamos exibindo são simplesmente codificados dentro dos dados do componente ``EventListView.vue``. Em um _app_ do mundo real, provavelmente haveria algum tipo de banco de dados de eventos do qual estaríamos extraindo. Nosso aplicativo faria uma solicitação para os eventos, o servidor responderia com eles (em formato **JSON**), nós os pegaríamos e os definiríamos como dados de nosso componente (``ref``), que exibiríamos na nossa ``view``. A figura abaixo ilustra este processo.
+Neste tutorial, vamos adicionar a funcionalidade onde um usuário pode clicar em qualquer um dos ``EventCards`` exibidos em nossa página inicial (``Home``) e ser direcionado para uma exibição que mostra mais detalhes sobre esse evento. Em outras palavras: vamos implementar algum comportamento de roteamento dinâmico. Abordaremos esse novo recurso em duas partes. 
 
-![fetch_data_api_call](img_readme/fetch_data_api_call.jpg)
+* **Parte 1**: Clicar em um evento e fazer uma chamada de API para buscá-lo com todos os seus detalhes. O evento será buscado pelo seu ``id``, porém estático.
 
-Portanto, nossas tarefas a serem executadas neste tutorial incluem:
-
-* Criar um banco de dados fictício (_mock database_) para abrigar nossos eventos
-* Instalar uma biblioteca (seu nome é **Axios**) para fazer as API Calls (Chamadas de API)
-* Implementar uma chamada de API de nome ``getEvents()``
-* Refatorar nosso código que trata da API em uma camada de serviço
+* **Parte 2**: Tornar o comportamento do roteamento mais dinâmico. Isto é, pode-se clicar em qualquer um dos eventos e ele será buscado via chamada da API, porém o seu ``id`` muda o endereço do URL dinamicamente.
 
 
-### **Passo 1. Nosso Banco de Dados Fictício (Mock Data Base)**
+Para a **Parte 1**, portanto, nossas tarefas a serem executadas são:
 
-Observe que existe um arquivo ``db.json`` no repositório do tutorial.
+* Criar um novo componente ``EventDetailsView`` para exibir os detalhes do evento
 
-1.1 Abra o arquivo "**db.json**" e observe o conteúdo dele.
+* Adicionar uma nova chamada de API para buscar um único evento pelo seu `id` (este é o evento do qual exibiremos os detalhes)
+
+* Adicionar uma rota para o novo componente ``EventDetailsView``
+
+* Tornar ``EventCard`` clicável para que possamos acessar esta nova rota chamada ``EventDetailsView``
+
+
+##Parte 1
+
+### **Passo 1. Criando O Componente ``EventDetailsView``**
+
+
+1.1 Crie um arquivo chamado "**src/views/EventDetailsView.vue**" e adicione o conteúdo abaixo nele.
 
 ```javascript
-{
-  "events": [
-    {
-      "id": 123,
-      "category": "animal welfare",
-      "title": "Cat Adoption Day",
-      "description": "Find your new feline friend at this event.",
-      "location": "Meow Town",
-      "date": "January 28, 2022",
-      "time": "12:00",
-      "organizer": "Kat Laydee"
-    },
-    {
-      "id": 456,
-      "category": "food",
-      "title": "Community Gardening",
-      "description": "Join us as we tend to the community edible plants.",
-      "location": "Flora City",
-      "date": "March 14, 2022",
-      "time": "10:00",
-      "organizer": "Fern Pollin"
-    },
-    {
-      "id": 789,
-      "category": "sustainability",
-      "title": "Beach Cleanup",
-      "description": "Help pick up trash along the shore.",
-      "location": "Playa Del Carmen",
-      "date": "July 22, 2022",
-      "time": "11:00",
-      "organizer": "Carey Wales"
-    }
-  ]
-}
-```
-
-> Esse código deve parecer muito familiar para você, pois é uma versão **JSON** dos dados dos eventos que estão localizados em nosso componente ``EventListView.vue``. São eles que iremos buscar em breve com uma chamada de **API**.
-
-Opcionalmente, você pode criar seu banco de dados. Para criá-lo, usaremos o website "**My JSON Server**", que é uma solução simples que não requer instalação. Só precisamos de um repositório **Github** com um arquivo ``db.json`` nele. 
-
-Antes porém, convém fazer uma breve descrição do site "**My JSON Server**". De acordo com o Chat-GPT:
-
-> O **My JSON Server** é um serviço online que permite criar uma **API REST** fake (i.e. simulada) usando apenas arquivos **JSON**. Com essa ferramenta, você pode criar _endpoints_ personalizados e disponibilizar dados fictícios neste formato (**JSON**). 
-
-> O funcionamento do **My JSON Server** é bastante simples. Você faz o upload dos arquivos **JSON** contendo os dados que deseja disponibilizar através da API, e o serviço gera _endpoints_ correspondentes a esses arquivos. Estes _endpoints_ podem ser acessados por meio de URLs específicas, e você pode fazer requisições HTTP como **GET**, **POST**, **PUT**, **DELETE** para recuperar, adicionar, atualizar ou excluir dados simulados.
-
-> Essa ferramenta é útil para desenvolvedores que desejam criar protótipos rápidos, realizar testes ou desenvolver aplicações que dependem de uma API externa. Com o **My JSON Server**, você pode simular uma API real com dados personalizados sem precisar criar um servidor completo para isso.
-
-1.2 A fim de acessar nosso servidor fictício, digite na barra de endereço do seu browser o seguinte URL:
-
-``my-json-server.typicode.com/{GithubUserName}/{RepoName}``
-
-> Obviamente, se você estiver criando seu próprio arquivo **db.json** no repositório de sua própria conta do Github, preencha os espaços em branco para seu ``UserName`` e ``RepoName``. Ou seja, genericamente o URL será:
-
-> Adicionando ``/events`` ao final do URL nos permite direcionar os dados dos eventos especificamente. Então o que usaremos em breve para fazer nossa chamada é: 
-
-``https://my-json-server.typicode.com/Code-Pop/Real-World_Vue-3/events``
-
-
-### **Passo 2. Axios Para Chamada de API**
-
-Agora que temos nosso _mock database_ e sabemos qual URL chamar, estamos prontos para instalar uma biblioteca para nos ajudar a fazer as chamadas de API. Vamos usar a biblioteca **Axios**.
-
-**Axios** é uma biblioteca JavaScript utilizada para fazer requisições HTTP a servidores a partir do ambiente do Vue.JS ou de qualquer outro aplicativo JavaScript. Ela é amplamente usada para realizar operações assíncronas, como recuperar dados de um servidor ou enviar dados para um servidor.
-
-Surge a pergunta: porque estamos usando Axios? Além de ser popular, ela inclui várias características, incluindo:
-
-* Solicitações GET, POST, PUT e DELETE
-* Adiciona autenticação a cada solicitação
-* Define tempos limite se as solicitações demorarem muito
-* Configura padrões para cada solicitação
-* Intercepta solicitações para criar _middleware_
-* Lida com erros e cancela solicitações adequadamente
-* Serializa e desserializa corretamente as solicitações e respostas
-
-2.1 Digite na linha de comando para irmos à pasta raiz do nosso projeto:
-
-```
-cd vue_3_mundo_real
-```
-
-2.2 Agora digite o comando abaixo.
-
-```
-npm install axios
-```
-
-### **Passo 3. Implementando Axios Para Obter Eventos**
-
-3.1 Para escrever nossa chamada de API, vamos para o componente ``EventListView.vue``, excluímos os dados dos eventos codificados (``events``) e vamos substituir por ``null``. Depois, importamos a biblioteca **Axios** e, em seguida, importamos/adicionamos o gancho do ciclo de vida ``onMounted`` (_lifecycle hook_). Portanto, abra o arquivo "**src/views/EventListView.vue**" e altere o seu conteúdo para o código abaixo.
-
-
-```
 <script setup>
 import { ref, onMounted } from 'vue'
-import EventCard from '@/components/EventCard.vue'
-import axios from 'axios'
 
-const events = ref(null)
+const event = ref(null)
 
 onMounted(() => {
-  // get events from mock db when component is created
-  // obtém os eventos do banco de dados fictício quando o componente é criado
+  // fetch event (by id) and set local event data
+  // busca o evento (por id) e define os dados do evento local
+  
 })
 </script>
 
+<template>
+  <div>
+    <h1>{{ event.title }}</h1>
+    <p>{{ event.time }} on {{ event.date }} @ {{ event.location }}</p>
+    <p>{{ event.description }}</p>
+  </div>
+</template>
 ```
 
-Mas, o que é _lifecycle hook_ no Vue.JS? De acordo com o Chat-GPT:
 
-> É um método predefinido que é executado em uma determinada ordem, começando a partir da inicialização da instância do Vue até sua destruição. Cada instância do componente Vue passa por uma série de etapas de inicialização quando é criada, como configurar a observação de dados, compilar o modelo, montar a instância no DOM e atualizá-lo quando os dados mudam. Ao longo do caminho, ele também executa funções chamadas ganchos de ciclo de vida, dando aos usuários a oportunidade de adicionar seu próprio código em estágios específicos. 
+> Esse código renderiza os detalhes do evento ``ref``. Esse evento é recuperado de uma chamada de API que o busca pelo seu ``id``. Vamos revisitar nosso banco de dados simulado para ver como buscá-lo.
 
-> Você só precisa entender que um componente tem um ciclo de vida e diferentes ganchos (ou métodos) são executados nesses diferentes estágios de seu ciclo de vida. Por exemplo, antes de ser criado, quando for criado, antes de ser montado, quando for montado e assim por diante. Veja a figura abaixo.
+> Observe o que acontece quando chamamos nosso URL "**my-json-server**", desta vez com um ``id``no final dele (**…/events/123**). Isso tem como alvo um único evento, onde seu ``id`` corresponde ao final do nosso URL: ``123``. Veja a figura abaixo.
 
-![lifecycle_hooks](img_readme/lifecycle_hooks.jpg)
+![url_api_call](img_readme/url_api_call.jpg)
 
-Observe na figura acima que existem oito (8) _lifecycle hooks_ no Vue.JS.
+> Este é o tipo de URL que usaremos ao buscar um único evento, onde termina com o ``id` do evento. Vamos entrar em nosso arquivo ``EventService`` e adicionar essa chamada de API agora.
 
-No nosso caso, queremos fazer nossa chamada de API e obter nossos eventos quando o componente estiver ``onMounted``, e, então vamos executar o método ``get`` disponível para nós no **Axios**, passando o URL "**my-json-server**" como argumento ( que é de onde se deseja obter).
-
-3.2 Abra o arquivo "**src/views/EventListView.vue**" e substitua o seu código para o trecho que está abaixo.
-
-```javascript
-import { ref, onMounted } from 'vue'
-import EventCard from '@/components/EventCard.vue'
-import axios from 'axios'
-
-const events = ref(null)
-
-onMounted(() => {
-  axios
-    .get('https://my-json-server.typicode.com/Code-Pop/Real-World_Vue-3/events')
-    .then((response) => {
-      events.value = response.data
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-})
-```
-> Como o Axios é uma biblioteca baseada em promessa e é executado de forma assíncrona, precisamos aguardar esta tal promessa retornada da solicitação ``get`` para resolver antes de prosseguir. É por isso que adicionamos o ``.then``, que nos permite esperar pela resposta (i.e. ``response``) e definir nossa referência de eventos locais (i.e. ``local events ref``) igual a ela.
-
-> Como queremos capturar quaisquer erros que ocorram, também adicionamos ``.catch`` e estamos apenas registrando o erro (i.e. ``error``) no console. Existem várias soluções em nível de produção para tratamento de erros, porém, esta atende às nossas necessidades para este tutorial. Veremos outras em um futuro próximo.
-
-> Se verificarmos isso no navegador, veremos nossos eventos sendo exibidos, extraídos suavemente de nosso servidor fictício recém-implementado.
-
-
-
-### **Passo 4. Reorganizando Nosso Código Em Uma Camada de Serviço**
-
-Porém, existe um problema com nosso código. Atualmente, estamos importando o Axios para o componente ``EventListView.vue``. Mas no próximo tutorial vamos criar um novo componente, que exibe os detalhes do nosso evento. E ele também precisará fazer uma chamada de API. Se estivermos importando o Axios para cada componente que precisa dele, estaremos criando desnecessariamente uma nova instância do Axios cada vez que fizermos isso (ver figura abaixo). Com o código da API entrelaçado em todo o nosso aplicativo, isso fica confuso e torna nosso aplicativo mais difícil de depurar.
-
-![problem_with_our_code](img_readme/problem_with_our_code.jpg)
-
-
-4.1 Uma solução mais limpa e escalável é modularizar nosso código de API em uma camada de serviço. Para fazer isso, crie uma pasta chamada ``services`` em "**src**".
-
-4.2 Agora crie um arquivo chamado "**src/services/EventService.js**" e coloque o conteúdo abaixo nele.
+1.2 Abra o arquivo "**src/services/EventService.js**" e adicione o conteúdo abaixo nele.
 
 ```javascript
 import axios from 'axios'
@@ -206,63 +86,290 @@ const apiClient = axios.create({
 export default {
   getEvents() {
     return apiClient.get('/events')
+  },
+  //Added new call
+  getEvent(id) {
+    return apiClient.get('/events/' + id)
   }
 }
 ```
 
-> Observe que na primeira linha do arquivo, que estamos importando o Axios. Abaixo disso, adicionamos uma constante chamada ``apiClient``, que contém uma instância do Axios. Como você pode ver, definimos um ``baseURL`` e algumas outras configurações para o Axios usar enquanto se comunica com nosso servidor.
+> A chamada ``getEvent`` é muito semelhante à chamada ``getEvents`` do último tutorial. No entanto, ela recebe um ``id`` como argumento, que é anexado ao final do URL para o qual estamos fazendo uma solicitação ``get``.
+
+Agora que a chamada ``getEvent`` está pronta para uso, vamos usá-la em nosso novo componente ``EventDetailsView``.
+
+1.3 Abra o arquivo "**src/views/EventDetailsView.vue**" e altere o seu conteúdo para o que está abaixo.
+
+```javascript
+import { ref, onMounted } from 'vue'
+import EventService from '@/services/EventService.js'
+
+const event = ref(null)
+const id = ref(123)
+
+onMounted(() => {
+  EventService.getEvent(id.value)
+    .then((response) => {
+      event.value = response.data
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+})
+```
+
+> Algumas coisas a serem observadas acima:
+
+* Estamos chamando ``getEvent`` do ``EventService``, que agora importamos para o componente
+* Estamos passando ``id.value`` - Esse ``id`` é atualmente apenas um valor de dados embutido em código. (Faremos essa dinâmica na Parte 2 deste tutorial. Essa não é nossa solução final.)
+* Estamos definindo nossa referência (``ref``) do ``event`` local igual à resposta de nossa solicitação ``getEvent``
+
+Agora que este componente está fazendo uma chamada para exibir um único evento, podemos adicioná-lo às nossas rotas.
+
+
+### **Passo 2. Adicionando ``EventDetailsView`` como uma rota**
+
+2.1 Abra o arquivo "**src/router/index.js**" e altere o seu conteúdo de acordo com o que está abaixo.
+
+```javascript
+...
+import EventDetailsView from '../views/EventDetailsView.vue'
+import AboutView from '../views/AboutView.vue'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    ...
+    {
+      path: '/event/123',
+      name: 'event-details',
+      component: EventDetailsView,
+    },
+    ...
+  ],
+})
+```
+
+> Por enquanto, apenas codificaremos o caminho: "**/event/123**". Eventualmente, a parte final (``123``) será dinâmica e atualizada com o ``id`` do evento que está sendo exibido no momento.
 > 
-> E por fim, podemos exportar um método que obtém nossos eventos, usando nosso novo Axios ``apiClient``.
 
-> Como você pode ver, ainda temos acesso ao método ``get`` do Axios e estamos passando ``'/events'`` como o argumento ao fazer essa chamada. Esta _string_ será adicionada ao nosso ``baseURL``, e então a requisição será feita para: ‘**https://my-json-server.typicode.com/Code-Pop/Real-World_Vue-3/events**’.
+> Agora que temos essa nova rota, precisamos acessá-la. Novamente, queremos acessar esta rota sempre que clicarmos em um dos ``EventCards`` em nossa página inicial (i.e. "**homepage**").
 
-4.3 Em seguida, só precisamos fazer uso deste novo ``EventService`` em nosso componente ``EventListView.vue``, excluindo a importação do Axios, importando o ``EventService`` e executando sua chamada ``getEvents()``. Abra o arquivo "**src/views/EventListview.vue**" e substitua seu conteúdo para o que está abaixo.
+
+### **Passo 3. Tornando o ``EventCard`` clicável com um ``RouterLink``**
+
+3.1 Indo para o componente ``EventCard``, vamos agrupar nosso código do _template_ em um ``RouterLink``. Portanto, abra o arquivo "**src/components/EventCard.vue**" e altere o seu conteúdo para o código abaixo.
+
+
+```javascript
+<template>
+  <RouterLink to="event/123">
+    <div class="event-card">
+      <h2>{{ event.title }}</h2>
+      <span>@{{ event.time }} on {{ event.date }}</span>
+    </div>
+  </RouterLink>
+</template>
+
+```
+
+Agora, quando um de nossos ``EventCards`` for clicado, seremos encaminhados para o novo caminho ``event/123``.
+
+Se verificarmos isso no browser, veremos um erro no console ao clicarmos em um evento (ver figura abaixo).
+
+![error_click_event](img_readme/error_click_event.jpg)
+
+
+> O que está acontecendo aqui é que ``EventDetailsView`` está tentando exibir os detalhes do evento antes de receber o evento de volta da chamada da API. Precisamos dizer ao nosso componente para esperar até que tenha o evento antes de tentar exibir seus detalhes. Felizmente, essa é uma solução muito simples.
+
+3.2 Abra o arquivo "**src/views/EventDetailsView.vue**" e altere o seu conteúdo com o que está abaixo.
+
+```javascript
+<template>
+  <div v-if="event">
+    <h1>{{ event.title }}</h1>
+    <p>{{ event.time }} on {{ event.date }} @ {{ event.location }}</p>
+    <p>{{ event.description }}</p>
+  </div>
+</template>
+```
+
+> Ao adicionar um simples ``v-if="event"`` em nosso elemento ``<div>`` aqui, podemos garantir que ele seja renderizado apenas quando o evento existir em nossos dados.
+
+
+3.3 Se verificarmos novamente no navegador, veremos que está funcionando até agora… Quando clicamos no evento "_Cat Adoption Day_" ``EventCard``, somos levados a uma visualização que exibe os detalhes desse evento. Veja a figura abaixo.
+
+![cat_adoption_day_event](img_readme/cat_adoption_day_event.jpg)
+
+> No entanto, se clicarmos em qualquer outro ``EventCard``, ainda estamos obtendo os mesmos detalhes do "_Cat Adoption Day_", e o ``id`` no final de nosso URL é o mesmo: **123**. Isso é esperado, já que codificamos o ``id`` que estamos passando para a chamada ``getEvent`` e no caminho da rota ``EventDetails`.
+
+Isso nos leva ao final da **Parte 1** e ao início da **Parte 2**, onde tornamos esse comportamento de roteamento dinâmico para que possamos rotear os detalhes de qualquer ``EventCard`` em que clicarmos.
+
+
+##Parte 2
+
+Para tornar nosso comportamento de roteamento dinâmico, precisamos trocar o ``id`` codificado em nosso caminho (**/123**) e substituí-lo por um segmento dinâmico. Este é basicamente um parâmetro variável para o caminho do URL, que é atualizado com o ``id`` de qualquer evento exibido atualmente nessa rota. A figura abaixo mostra o que pretendemos fazer.
+
+![dynamic_segment](img_readme/dynamic_segment.jpg)
+
+> Em seguida, desejaremos prover esse segmento dinâmico no componente ``EventDetailsView`` como uma ``prop`` a ser usada ao fazer a chamada ``getEvent``.
+
+
+
+### **Passo 4. Adicionando um segmento dinâmico à rota ``EventDetailsView``**
+
+Vamos começar e adicionar um segmento dinâmico ao caminho da rota ``EventDetailsView`.
+
+4.1 Abra o arquivo "**src/router/index.js**" e altere o seu conteúdo conforme abaixo.
+
+```javascript
+{
+  path: '/event/:id',
+  name: 'event-details',
+  props: true,
+  component: EventDetailsView,
+},
+```
+
+> Observe como a sintaxe de um segmento dinâmico começa com dois pontos ``:`` e é seguida pelo que você quiser chamar o segmento. Nesse caso, é ``:id``, pois é substituído pelo ``id`` do nosso evento. Em outro caso de uso, pode ser algo como ``:username`` ou ``:orderNumber``.
+
+> Também adicionamos ``props: true`` aqui para dar ao componente ``EventDetailsView`` acesso a este parâmetro de segmento dinâmico como uma ``prop``.
+
+> Como atualizamos o caminho nesta rota, o caminho no atributo ``to`` do nosso atributo ``EventCard`` agora precisa ser atualizado. Lembre-se, atualmente está codificado como ``to="event/123"``.
+
+
+4.2 Agora abra o arquivo "**src/components/EventCard.vue**" e observe a linha que contém o ``RouterLink``. Altere-a para:
+
+```javascript
+<RouterLink :to="{ name: 'event-details' }">
+```
+
+> Agora, também tornamos nosso aplicativo um pouco mais escalável. Em um aplicativo maior com vários ``RouterLinks``, torna-se desnecessariamente árduo manter os caminhos em cada ``RouterLink`` sempre que eles precisam mudar. Por outro lado, se os seus usaram rotas nomeadas e o caminho da sua rota precisar ser alterado, você pode simplesmente alterá-lo uma vez no arquivo do roteador e nenhum de seus ``RouterLinks`` precisa ser atualizado, pois não depende do próprio caminho .
+
+### **Passo 5. Adicionando o ID do evento aos parâmetros do roteador**
+
+Neste ponto, você deve estar se perguntando como dizemos ao nosso segmento dinâmico ``:id`` por qual valor ele precisa ser substituído. Podemos fazer isso adicionando a propriedade ``params`` ao nosso objeto no atributo ``to:``.
+
+5.1 Abra o arquivo "**src/components/EventCard.vue**" e altere o seu conteúdo para o abaixo.
+
+```javascript
+<script setup>
+defineProps({
+  event: {
+    type: Object,
+    required: true,
+  },
+})
+</script>
+
+<template>
+  <RouterLink :to="{ name: 'event-details', params: { id: event.id } }">
+    <div class="event-card">
+      <h2>{{ event.title }}</h2>
+      <span>@{{ event.time }} on {{ event.date }}</span>
+    </div>
+  </RouterLink>
+</template>
+```
+
+> Lembre-se de alguns tutoriais atrás, este componente tem o evento como uma ``prop``, e então podemos pegar ``event.id`` dele e definir o parâmetro ``id``  igual a ele. Veja a linha acima que contém o código abaixo.
+
+```javascript
+<RouterLink :to="{ name: 'event-details', params: { id: event.id } }">
+```
+
+Agora, quando clicamos neste ``RouterLink``, somos roteados para ``EventDetailsView`` e o caminho da rota é anexado com o ``id`` do evento.
+
+
+5.2 Agora podemos finalmente alimentar esse parâmetro ``id`` no componente ``EventDetailsView`` como uma ``prop``. Abra o arquivo "src/views/EventDetailsView.vue" e altere o seu conteúdo como o abaixo.
 
 ```javascript
 <script setup>
 import { ref, onMounted } from 'vue'
-import EventCard from '@/components/EventCard.vue'
-~~import axios from 'axios'~~
 import EventService from '@/services/EventService.js'
 
-const events = ref(null)
+const props = defineProps({
+  id: {
+    required: true,
+  },
+})
+
+const event = ref(null)
 
 onMounted(() => {
-  EventService.getEvents()
+  EventService.getEvent(props.id)
     .then((response) => {
-      events.value = response.data
+      event.value = response.data
     })
     .catch((error) => {
       console.log(error)
     })
 })
 </script>
+```
 
+> Agora, quando dizemos ``getEvent(this.id)``, estamos nos referindo à ``prop id`` recém-adicionada. Quando ``EventDetailsView`` é roteado e assim montado, ele agora faz uma solicitação para o evento com o ``id`` que se encontra no parâmetro dinâmico do caminho da rota.
+
+
+5.3 Se verificarmos isso no browser, poderemos clicar com sucesso em um ``EventCard`` e exibir os detalhes apropriados para esse evento. Veja a figura abaixo.
+
+![click_event_succesful](img_readme/click_event_succesful.jpg)
+
+### **Passo 6. Limpando nosso Código**
+
+Com isso, finalizamos nosso comportamento de roteamento dinâmico. Ufa! Foram muitos passos. Agora, eu só precisamos limpar algumas coisas antes de terminarmos.
+
+Primeiro, nossos ``EventCards`` não parecem tão bonitos agora que estão envolvidos com um``RouterLink`` (ver figura abaixo).
+
+![event_card_no_nice](img_readme/event_card_no_nice.jpg)
+
+
+Vamos adicionar uma classe chamada ``event-link`` ao ``<RouterLink>`` para torná-lo mais bonito.
+
+6.1 Abra o arquivo "**src/components/EventCard.vue**" e altere o seu conteúdo por este abaixo.
+
+```javascript
 <template>
-  <h1>Events For Good</h1>
-  <div class="events">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
-  </div>
+  <RouterLink
+    class="event-link"
+    :to="{ name: 'event-details', params: { id: event.id } }"
+  >
+    <div class="event-card">
+      <h2>{{ event.title }}</h2>
+      <span>@{{ event.time }} on {{ event.date }}</span>
+    </div>
+  </RouterLink>
 </template>
 
 <style scoped>
-.events {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+...
+.event-link {
+  color: #2c3e50;
+  text-decoration: none;
 }
 </style>
 ```
+A figura abaixo mostra que a visualização de evento ficou mais agradável.
 
-E com isso, refatoramos nosso código de API em uma camada de serviço modular. O refatoramento está ilustrado na figura abaixo.
+![event_card_nice](img_readme/event_card_nice.jpg)
 
-![modular_layer_service](img_readme/modular_layer_service.jpg)
+Por uma questão de consistência, também podemos atualizar o arquivo ``App.vue`` para usar rotas nomeadas em vez de caminhos codificados.
+
+6.2 Abra o arquivo "**src/App.vue**" e altere o trecho de código para:
+
+```javascript
+<div class="wrapper">
+  <nav>
+    <RouterLink :to="{ name: 'event-list' }">Events</RouterLink> |
+    <RouterLink :to="{ name: 'about' }">About</RouterLink>
+  </nav>
+</div>
+```
+
+> Isso ajuda a criar escalabilidade para a manutenção das rotas de nosso aplicativo.
 
 
-### **Passo 6. Fazendo o Fechamento**
 
-6.1 Repita o procedimento efetuado no **Passo 3.10** do **Tutorial 3** para visualizarmos no browser o que acabamos de fazer no passo anterior. Você verá algo como a figura abaixo.
+### **Passo 7. Fazendo o Fechamento**
 
-![example_app_t4](img_readme/example_app_t4.jpg)
-
-Ao visualizar nossos eventos no browser, os ``EventCards` parecem clicáveis. Não seria legal se pudéssemos clicar neles e ver mais detalhes sobre esse evento? No próximo tutorial, aprenderemos como fazer isso usando as habilidades de roteamento dinâmico do **Vue Router**.
+No próximo tutorial, aprenderemos como pegar nosso aplicativo e implantá-lo na produção (i.e. fazer o _deploy_), usando o **Render**.
