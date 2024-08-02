@@ -26,23 +26,44 @@ class Wood(Enum):
     SITKA = "sitka"
 
 class GuitarSpec:
-    def __init__(self, builder, model, typeG, backWood, topWood):
+    def __init__(self, builder, model, typeG, backWood, topWood, numStrings):
         self.builder = builder
         self.model = model
         self.typeG = typeG
         self.backWood = backWood
         self.topWood = topWood
+        self.numStrings = numStrings
+
+    def getBuilder(self):
+        return self.builder
+
+    def getTypeG(self):
+        return self.typeG
+
+    def getModel(self):
+        return self.model
+
+    def getBackWood(self):
+        return self.backWood
+
+    def getTopWood(self):
+        return self.topWood
+
+    def getNumStrings(self):
+        return self.numStrings
 
     def matches(self, otherSpec):
-        if self.builder != otherSpec.builder and otherSpec.builder != Builder.ANY.value:
+        if self.builder != otherSpec.getBuilder():
             return False
-        if self.model != otherSpec.model and otherSpec.model:
+        if self.model and self.model.lower() != otherSpec.getModel().lower():
             return False
-        if self.typeG != otherSpec.typeG and otherSpec.typeG:
+        if self.typeG != otherSpec.getTypeG():
             return False
-        if self.backWood != otherSpec.backWood and otherSpec.backWood:
+        if self.backWood != otherSpec.getBackWood():
             return False
-        if self.topWood != otherSpec.topWood and otherSpec.topWood:
+        if self.topWood != otherSpec.getTopWood():
+            return False
+        if self.numStrings != otherSpec.getNumStrings():
             return False
         return True
 
@@ -58,18 +79,14 @@ class Guitar:
     def getPrice(self):
         return self.price
 
-    def setPrice(self, newPrice):
-        self.price = newPrice
-
     def getSpec(self):
         return self.spec
-
+    
 class Inventory:
     def __init__(self):
         self.guitars = []
 
-    def addGuitar(self, serialNumber, price, builder, model, typeG, backWood, topWood):
-        spec = GuitarSpec(builder, model, typeG, backWood, topWood)
+    def addGuitar(self, serialNumber, price, spec):
         guitar = Guitar(serialNumber, price, spec)
         self.guitars.append(guitar)
 
@@ -79,24 +96,40 @@ class Inventory:
                 return guitar
         return None
 
-    def searchGuitar(self, searchSpec):
+    def search(self, searchGuitar):
         matchingGuitars = []
         for guitar in self.guitars:
-            if guitar.getSpec().matches(searchSpec):
+            if guitar.getSpec().matches(searchGuitar):
                 matchingGuitars.append(guitar)
         return matchingGuitars
+    
+def initializeInventory(inventory):
+    spec1 = GuitarSpec(Builder.FENDER, "stratocastor", TypeG.ELECTRIC, Wood.ALDER, Wood.ALDER, 6)
+    inventory.addGuitar("V95693", 1499.95, spec1)
+    inventory.addGuitar("V99999", 1599.95, spec1)
 
-inventory = Inventory()
+    #spec2 = GuitarSpec(Builder.MARTIN, "D-18", TypeG.ACOUSTIC, Wood.MAHOGANY, Wood.ADIRONDACK, 6)
+    #inventory.addGuitar("122784", 5495.95, spec2)
+    #inventory.addGuitar("76531", 6295.95, Builder.MARTIN, "OM-28", TypeG.ACOUSTIC, Wood.BRAZILIAN_ROSEWOOD, Wood.ADIRONDACK, 6)
+    #inventory.addGuitar("70108276", 2295.95, Builder.GIBSON, "Les Paul", TypeG.ELECTRIC, Wood.MAHOGANY, Wood.MAHOGANY, 6)
+    #inventory.addGuitar("82765501", 1890.95, Builder.GIBSON, "SG '61 Reissue", TypeG.ELECTRIC, Wood.MAHOGANY, Wood.MAHOGANY, 6)
+    #inventory.addGuitar("77023", 6275.95, Builder.MARTIN, "D-28", TypeG.ACOUSTIC, Wood.BRAZILIAN_ROSEWOOD, Wood.ADIRONDACK, 6)
 
-inventory.addGuitar("V95693", 1499.95, Builder.FENDER.value, "Stratocastor", TypeG.ELECTRIC.value, Wood.ALDER.value, Wood.ALDER.value)
-inventory.addGuitar("11277", 3999.95, Builder.COLLINGS.value, "CJ", TypeG.ACOUSTIC.value, Wood.INDIAN_ROSEWOOD.value, Wood.INDIAN_ROSEWOOD.value)
 
-whatErinLikes = GuitarSpec(Builder.FENDER.value, "Stratocastor", TypeG.ELECTRIC.value, Wood.ALDER.value, Wood.ALDER.value)
+def main():
+    inventory = Inventory()
+    initializeInventory(inventory)
 
-matchingGuitars = inventory.searchGuitar(whatErinLikes)
-if matchingGuitars:
-    for guitar in matchingGuitars:
-        spec = guitar.getSpec()
-        print(f"Erin, you might like this {spec.builder} {spec.model} {spec.typeG} guitar:\n{spec.backWood} back and sides,\n{spec.topWood} top.\nYou can have it for only ${guitar.getPrice()}!")
-else:
-    print("Sorry, Erin, we have nothing for you.")
+    whatErinLikes = GuitarSpec(Builder.FENDER, "Stratocastor", TypeG.ELECTRIC, Wood.ALDER, Wood.ALDER, 6)
+    matchingGuitars = inventory.search(whatErinLikes)
+
+    if matchingGuitars:
+        print("Erin, talvez você goste destas: ")
+        for guitar in matchingGuitars:
+            guitarSpec = guitar.getSpec()
+            print(f"\nGuitarra: {guitar.getSerialNumber()} {guitarSpec.getBuilder().value} {guitarSpec.getModel()} {guitarSpec.getTypeG().value} guitar:\n{guitarSpec.getBackWood().value} na traseira e laterais,\n{guitarSpec.getTopWood().value} no tampo, com {guitarSpec.getNumStrings()} cordas\nEla pode ser sua por apenas US${guitar.getPrice():.2f}!")
+    else:
+        print("Desculpe Erin, não temos nada para você")
+
+if __name__ == '__main__':
+    main()
