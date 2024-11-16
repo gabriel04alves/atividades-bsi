@@ -13,7 +13,7 @@ class LivroListSerializer(ModelSerializer):
         model = Livro
         fields = ("id", "titulo", "preco") 
 
-class LivroListRetrieveSerializer(ModelSerializer):
+class LivroRetrieveSerializer(ModelSerializer):
     class Meta:
         model = Livro
         fields = "__all__"
