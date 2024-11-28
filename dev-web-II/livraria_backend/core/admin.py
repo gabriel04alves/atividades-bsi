@@ -53,12 +53,14 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    ...
+    ordering = ["id"]
+    list_display = ["email", "name"]
+
 @admin.register(Autor)
 class AutorAdmin(admin.ModelAdmin):
     list_display = ('nome', 'email')
     search_fields = ('nome', 'email')
-    list_filter = ('nome')
+    list_filter = ('nome',)
     ordering = ('nome', 'email')
     list_per_page = 10
 
