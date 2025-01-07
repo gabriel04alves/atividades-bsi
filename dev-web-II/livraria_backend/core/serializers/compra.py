@@ -65,7 +65,11 @@ class ItensCompraListSerializer(ModelSerializer):
 class CompraListSerializer(ModelSerializer):
     usuario = CharField(source="usuario.email", read_only=True)
     itens = ItensCompraListSerializer(many=True, read_only=True)
+    total = SerializerMethodField()
+
+    def get_total(self, instance):
+        return instance.total
 
     class Meta:
         model = Compra
-        fields = ("id", "usuario", "itens")
+        fields = ("id", "usuario", "itens", "total")
