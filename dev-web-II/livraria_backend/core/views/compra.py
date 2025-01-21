@@ -6,11 +6,14 @@ from rest_framework.response import Response
 from core.models import Compra
 from django.utils import timezone
 from core.serializers import CompraSerializer, CompraCreateUpdateSerializer, CompraListSerializer, CompraSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CompraViewSet(ModelViewSet):
     queryset = Compra.objects.all()
     serializer_class = CompraSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["status"]
 
     def get_serializer_class(self):
         if self.action == "list":
