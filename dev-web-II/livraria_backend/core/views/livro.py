@@ -19,8 +19,9 @@ from core.serializers import (
 class LivroViewSet(ModelViewSet):
     queryset = Livro.objects.all()
     serializer_class = LivroSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ["categoria__descricao", "editora__nome"]
+    search_fields = ["titulo"]
 
     def get_serializer_class(self):
         if self.action == "list":
