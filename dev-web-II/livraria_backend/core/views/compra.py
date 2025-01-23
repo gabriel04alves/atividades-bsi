@@ -6,16 +6,18 @@ from rest_framework.response import Response
 from core.models import Compra
 from django.utils import timezone
 from core.serializers import CompraSerializer, CompraCreateUpdateSerializer, CompraListSerializer, CompraSerializer
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CompraViewSet(ModelViewSet):
     queryset = Compra.objects.all()
     serializer_class = CompraSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["status"]
     search_fields = ["status"]
+    ordering_fields = ["usuario__email", "status", "data"]
+    ordering = ["-data"]
 
     def get_serializer_class(self):
         if self.action == "list":
